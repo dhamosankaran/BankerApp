@@ -64,4 +64,4 @@ Dynamic interface adaptation based on user role:
 - **macOS / Windows**: Desktop-class experience
 
 ---
-*Built with ❤️ by the AntiGravity Team*
+*Built with ❤️ using **AntiGravity IDE** by the Google DeepMind Team*
