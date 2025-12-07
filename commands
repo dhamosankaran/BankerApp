@@ -1,0 +1,48 @@
+# Development Setup Commands
+
+## Fix for "Ruby version is 2.6.10" Error
+
+The error occurs because the default macOS system Ruby (v2.6) is too old for the latest CocoaPods dependencies.
+
+### Option 1: Install via Homebrew (Recommended)
+# This avoids system Ruby issues entirely
+brew install cocoapods
+
+# Link it if you have issues
+brew link --overwrite cocoapods
+
+### Option 2: Workaround for System Ruby
+# If you must use gem install, try installing the older compatible dependency first:
+sudo gem install securerandom -v 0.3.2
+sudo gem install cocoapods
+
+### Option 3: Update Ruby (Advanced)
+# Install a modern Ruby version using Homebrew
+brew install ruby
+# Add to path (follow instructions from brew output)
+export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
+
+## After Installation Setup
+cd /Users/kalaidhamu/Desktop/KalaiDhamu/LLM/General/BankerApp_AntiGravity/ios
+pod install --repo-update
+
+## Run iOS Build
+cd /Users/kalaidhamu/Desktop/KalaiDhamu/LLM/General/BankerApp_AntiGravity
+flutter build ios --debug --no-codesign
+
+## Simulator & Running
+# Open Simulator
+open -a Simulator
+
+# Run on open iPhone Simulator
+flutter run -d iphone
+
+# Run on specific simulator
+flutter run -d "iPhone 15 Pro"
+
+# Run on Chrome for web testing
+flutter run -d chrome --web-renderer html
+
+# Clean and rebuild
+flutter clean
+flutter pub get

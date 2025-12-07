@@ -1,0 +1,8074 @@
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'segment_features.dart';
+import 'compliance_features.dart';
+import 'role_features.dart';
+
+
+// ============================================================================
+// ENHANCED DATA MODELS FOR PRIVATE/CORPORATE/INSTITUTIONAL BANKING
+// ============================================================================
+
+enum ClientSegment { 
+  privateBanking, 
+  corporateBanking, 
+  institutional, 
+  investmentBanking 
+}
+
+enum ProductCategory {
+  lending,
+  markets,
+  wealth,
+  advisory,
+  cashManagement,
+  structuredProducts,
+  custody,
+  primeBrokerage,
+  leveragedFinance,
+}
+
+enum ComplianceStatus { pending, inReview, approved, expired, requiresUpdate }
+
+enum RiskRating { low, medium, high, veryHigh }
+
+// Enhanced Client Model
+class ClientData {
+  final String id;
+  final String name;
+  final ClientSegment segment;
+  final String tier;
+  final String relationshipManager;
+  
+  // Common fields
+  final String jurisdiction;
+  final ComplianceStatus kycStatus;
+  final DateTime kycExpiryDate;
+  final RiskRating riskRating;
+  final double totalRevenue;
+  final Map<ProductCategory, double> walletByProduct;
+  
+  // Segment-specific data
+  final PrivateBankingData? privateBankingData;
+  final CorporateBankingData? corporateBankingData;
+  final InstitutionalBankingData? institutionalBankingData;
+  final InvestmentBankingData? investmentBankingData;
+  
+  // Relationship data
+  final List<String> decisionMakers;
+  final String? parentEntity;
+  final List<String> subsidiaries;
+
+  ClientData({
+    required this.id,
+    required this.name,
+    required this.segment,
+    required this.tier,
+    required this.relationshipManager,
+    required this.jurisdiction,
+    required this.kycStatus,
+    required this.kycExpiryDate,
+    required this.riskRating,
+    required this.totalRevenue,
+    required this.walletByProduct,
+    this.privateBankingData,
+    this.corporateBankingData,
+    this.institutionalBankingData,
+    this.investmentBankingData,
+    this.decisionMakers = const [],
+    this.parentEntity,
+    this.subsidiaries = const [],
+  });
+}
+
+// Private Banking specific data
+class PrivateBankingData {
+  final double netWorth;
+  final double aum;
+  final String familyStructure;
+  final List<String> trustEntities;
+  final Map<String, double> assetAllocation;
+  final String investmentObjective;
+  final String taxJurisdiction;
+  final bool estatePlanningActive;
+  final int familyMembers;
+  final String generationFocus;
+
+  PrivateBankingData({
+    required this.netWorth,
+    required this.aum,
+    required this.familyStructure,
+    required this.trustEntities,
+    required this.assetAllocation,
+    required this.investmentObjective,
+    required this.taxJurisdiction,
+    required this.estatePlanningActive,
+    required this.familyMembers,
+    required this.generationFocus,
+  });
+}
+
+// Corporate Banking specific data
+class CorporateBankingData {
+  final double annualRevenue;
+  final double ebitda;
+  final int employeeCount;
+  final String industrySector;
+  final double workingCapitalNeeds;
+  final String creditRating;
+  final double tradeFinanceVolume;
+  final Map<String, double> productUtilization;
+  final double cashBalance;
+  final String treasuryComplexity;
+
+  CorporateBankingData({
+    required this.annualRevenue,
+    required this.ebitda,
+    required this.employeeCount,
+    required this.industrySector,
+    required this.workingCapitalNeeds,
+    required this.creditRating,
+    required this.tradeFinanceVolume,
+    required this.productUtilization,
+    required this.cashBalance,
+    required this.treasuryComplexity,
+  });
+}
+
+// Institutional Banking specific data
+class InstitutionalBankingData {
+  final double aum;
+  final Map<String, double> assetAllocation;
+  final String investmentMandate;
+  final String regulatoryFramework;
+  final String benchmark;
+  final String investmentHorizon;
+  final double custodyVolume;
+  final bool esgFocused;
+  final String institutionType;
+
+  InstitutionalBankingData({
+    required this.aum,
+    required this.assetAllocation,
+    required this.investmentMandate,
+    required this.regulatoryFramework,
+    required this.benchmark,
+    required this.investmentHorizon,
+    required this.custodyVolume,
+    required this.esgFocused,
+    required this.institutionType,
+  });
+}
+
+// Opportunity Model
+class OpportunityData {
+  final String id;
+  final String clientId;
+  final String title;
+  final ProductCategory productCategory;
+  final double estimatedRevenue;
+  final double probability;
+  final String stage;
+  final DateTime expectedCloseDate;
+  final String description;
+  final List<String> teamMembers;
+
+  OpportunityData({
+    required this.id,
+    required this.clientId,
+    required this.title,
+    required this.productCategory,
+    required this.estimatedRevenue,
+    required this.probability,
+    required this.stage,
+    required this.expectedCloseDate,
+    required this.description,
+    required this.teamMembers,
+  });
+}
+
+// ============================================================================
+// INVESTMENT BANKING DATA MODELS
+// ============================================================================
+
+enum DealType {
+  maAdvisory,      // M&A Advisory
+  ecm,             // Equity Capital Markets (IPO, Follow-on)
+  dcm,             // Debt Capital Markets (IG, HY, Convertibles)
+  leveragedFinance, // LBO, Acquisition Financing
+  restructuring,   // In-court, Out-of-court
+}
+
+enum DealStage {
+  pitch,      // Initial pitch
+  mandate,    // Mandate won
+  execution,  // Deal in execution
+  closed,     // Deal completed
+  lost,       // Lost to competitor
+}
+
+enum RegulatoryApproval {
+  hsr,            // Hart-Scott-Rodino
+  sec,            // SEC filing
+  antitrust,      // Antitrust clearance
+  cftc,           // CFTC approval
+  finra,          // FINRA review
+  international,  // International regulatory
+}
+
+// Past Transaction/Credential
+class PastTransaction {
+  final String transactionName;
+  final DealType type;
+  final double value;              // in millions
+  final DateTime closeDate;
+  final String role;               // Lead, Co-Manager, etc.
+  final double fee;                // in millions
+
+  PastTransaction({
+    required this.transactionName,
+    required this.type,
+    required this.value,
+    required this.closeDate,
+    required this.role,
+    required this.fee,
+  });
+}
+
+// Deal/Transaction Model
+class DealData {
+  final String id;
+  final String dealName;
+  final DealType dealType;
+  final String targetCompany;
+  final String? acquirerCompany;   // for M&A
+  final double dealValue;          // enterprise value or raise amount (millions)
+  final DealStage stage;
+  final double estimatedFee;       // in millions
+  final double probability;        // 0.0 to 1.0
+  final DateTime? expectedClose;
+  final String leadBanker;
+  final List<String> dealTeam;
+  final List<String> competitors;  // other banks pitching
+  final String sector;
+  final List<RegulatoryApproval> approvalsNeeded;
+  final DateTime pitchDate;
+  final DateTime? mandateDate;
+  final String status;             // Active, On Hold, Completed, Lost
+
+  DealData({
+    required this.id,
+    required this.dealName,
+    required this.dealType,
+   required this.targetCompany,
+    this.acquirerCompany,
+    required this.dealValue,
+    required this.stage,
+    required this.estimatedFee,
+    required this.probability,
+    this.expectedClose,
+    required this.leadBanker,
+    required this.dealTeam,
+    required this.competitors,
+    required this.sector,
+    required this.approvalsNeeded,
+    required this.pitchDate,
+    this.mandateDate,
+    required this.status,
+  });
+}
+
+// Investment Banking specific client data
+class InvestmentBankingData {
+  final String companyType;        // Public, Private, Portfolio Company
+  final double? marketCap;         // for public companies (millions)
+  final String? sponsor;           // PE/VC sponsor if applicable
+  final List<String> sectors;      // TMT, Healthcare, Industrials, etc.
+  final String? ticker;            // for public companies
+  final List<PastTransaction> transactionHistory;
+  final bool activeMandate;
+  final List<String> boardMembers;
+  final String? strategicPriority; // Inorganic growth, divestiture, capital raise
+
+  InvestmentBankingData({
+    required this.companyType,
+    this.marketCap,
+    this.sponsor,
+    required this.sectors,
+    this.ticker,
+    required this.transactionHistory,
+    required this.activeMandate,
+    required this.boardMembers,
+    this.strategicPriority,
+  });
+}
+
+// ============================================================================
+// MOCK GENAI SERVICE - Powers All AI Features with Realistic Responses
+// ============================================================================
+
+class AIInsight {
+  final String category;
+  final String title;
+  final String description;
+  final String priority; // high, medium, low
+  final double? revenueImpact;
+  final String? action;
+
+  AIInsight({
+    required this.category,
+    required this.title,
+    required this.description,
+    required this.priority,
+    this.revenueImpact,
+    this.action,
+  });
+}
+
+class NextBestAction {
+  final String title;
+  final String description;
+  final String reasoning;
+  final double estimatedRevenue;
+  final String priority;
+  final String clientId;
+  final String clientName;
+  final DateTime suggestedDate;
+  final String actionType; // email, call, meeting, proposal
+
+  NextBestAction({
+    required this.title,
+    required this.description,
+    required this.reasoning,
+    required this.estimatedRevenue,
+    required this.priority,
+    required this.clientId,
+    required this.clientName,
+    required this.suggestedDate,
+    required this.actionType,
+  });
+}
+
+class MarketAlert {
+  final String title;
+  final String summary;
+  final List<String> affectedClientIds;
+  final String impact;
+  final List<String> talkingPoints;
+  final DateTime timestamp;
+
+  MarketAlert({
+    required this.title,
+    required this.summary,
+    required this.affectedClientIds,
+    required this.impact,
+    required this.talkingPoints,
+    required this.timestamp,
+  });
+}
+
+class LifeEvent {
+  final String eventType;
+  final String description;
+  final String source;
+  final List<String> suggestedProducts;
+  final DateTime detectedDate;
+  final double confidence;
+
+  LifeEvent({
+    required this.eventType,
+    required this.description,
+    required this.source,
+    required this.suggestedProducts,
+    required this.detectedDate,
+    required this.confidence,
+  });
+}
+
+class MockGenAIService {
+  // Singleton pattern
+  static final MockGenAIService _instance = MockGenAIService._internal();
+  factory MockGenAIService() => _instance;
+  MockGenAIService._internal();
+
+  // ========== Feature 1: Customer Insights Generation ==========
+  List<AIInsight> generateCustomerInsights(ClientData client) {
+    final insights = <AIInsight>[];
+
+    // Portfolio health analysis
+    if (client.segment == ClientSegment.privateBanking && 
+        client.privateBankingData != null) {
+      final pb = client.privateBankingData!;
+      insights.add(AIInsight(
+        category: 'Portfolio Health',
+        title: 'Strong diversification detected',
+        description: 'Portfolio shows healthy ${pb.assetAllocation.length}-asset allocation. Consider rebalancing: Private Equity exposure at ${pb.assetAllocation['Private Equity']}% is above typical 20% threshold.',
+        priority: 'medium',
+        revenueImpact: 0.15,
+      ));
+
+      if (pb.estatePlanningActive) {
+        insights.add(AIInsight(
+          category: 'Life Event',
+          title: 'Estate planning in progress',
+          description: 'Active estate planning for ${pb.familyMembers} family members. ${pb.generationFocus}. Opportunity for trust services and wealth transfer strategies.',
+          priority: 'high',
+          revenueImpact: 0.3,
+          action: 'Schedule estate planning review',
+        ));
+      }
+    }
+
+    // Compliance alerts
+    final daysToExpiry = client.kycExpiryDate.difference(DateTime.now()).inDays;
+    if (daysToExpiry < 90) {
+      insights.add(AIInsight(
+        category: 'Compliance',
+        title: 'KYC renewal required soon',
+        description: 'KYC expires in $daysToExpiry days. Schedule renewal meeting to maintain compliance.',
+        priority: daysToExpiry < 30 ? 'high' : 'medium',
+      ));
+    }
+
+    // Revenue opportunity analysis
+    if (client.totalRevenue > 2.0) {
+      insights.add(AIInsight(
+        category: 'Cross-Sell',
+        title: 'High-value client - expansion opportunity',
+        description: 'Current revenue of \$${client.totalRevenue.toStringAsFixed(1)}M. Wallet analysis suggests \$${(client.totalRevenue * 0.3).toStringAsFixed(1)}M additional opportunity in underutilized products.',
+        priority: 'high',
+        revenueImpact: client.totalRevenue * 0.3,
+        action: 'Present wallet share analysis',
+      ));
+    }
+
+    // Relationship engagement
+    insights.add(AIInsight(
+      category: 'Engagement',
+      title: 'Proactive outreach recommended',
+      description: 'Last significant interaction was 45 days ago. Market volatility presents opportunity for portfolio review discussion.',
+      priority: 'medium',
+      action: 'Schedule portfolio review call',
+    ));
+
+    return insights;
+  }
+
+  // ========== Feature 2: Meeting Preparation ==========
+  Map<String, dynamic> prepareMeetingBriefing(ClientData client) {
+    final briefing = <String, dynamic>{};
+    
+    briefing['summary'] = 'Meeting Preparation for ${client.name}';
+    briefing['keyTopics'] = [
+      'Portfolio performance review (YTD)',
+      'Market outlook and positioning',
+      'Upcoming product opportunities',
+      if (client.kycExpiryDate.difference(DateTime.now()).inDays < 180)
+        'KYC renewal process',
+    ];
+
+    briefing['recentActivity'] = [
+      'Last portfolio review: 45 days ago',
+      'Recent transaction: \$2.3M wire transfer (3 days ago)',
+      'Email interaction: Market commentary sent (1 week ago)',
+    ];
+
+    briefing['talkingPoints'] = [
+      'Acknowledge recent market volatility - portfolio holding steady',
+      'Present Q4 tax planning strategies',
+      'Introduce new ESG product suite',
+      'Discuss succession planning if applicable',
+    ];
+
+    briefing['objectives'] = [
+      'Deepen relationship with decision makers',
+      'Present 2-3 new product opportunities',
+      'Schedule follow-up for detailed proposal',
+    ];
+
+    return briefing;
+  }
+
+  // ========== Feature 3: Next Best Actions Engine ==========
+  List<NextBestAction> generateNextBestActions(List<ClientData> allClients) {
+    final actions = <NextBestAction>[];
+
+    // Generate smart actions based on client data
+    for (var client in allClients.take(5)) {
+      if (client.segment == ClientSegment.privateBanking) {
+        actions.add(NextBestAction(
+          title: 'Present wealth consolidation proposal',
+          description: 'Opportunity to consolidate \$50M in external assets',
+          reasoning: 'Client has 65% of assets under management. Market analysis shows potential to increase to 85% through competitive fee structure.',
+          estimatedRevenue: 0.25,
+          priority: 'high',
+          clientId: client.id,
+          clientName: client.name,
+          suggestedDate: DateTime.now().add(const Duration(days: 7)),
+          actionType: 'meeting',
+        ));
+      }
+
+      if (client.kycExpiryDate.difference(DateTime.now()).inDays < 60) {
+        actions.add(NextBestAction(
+          title: 'Initiate KYC renewal for ${client.name}',
+          description: 'KYC documentation expires soon - proactive renewal',
+          reasoning: 'Maintaining compliance ahead of deadline demonstrates proactive relationship management.',
+          estimatedRevenue: 0.0,
+          priority: 'high',
+          clientId: client.id,
+          clientName: client.name,
+          suggestedDate: DateTime.now().add(const Duration(days: 3)),
+          actionType: 'email',
+        ));
+      }
+    }
+
+    // Sort by priority and revenue
+    actions.sort((a, b) {
+      if (a.priority == 'high' && b.priority != 'high') return -1;
+      if (a.priority != 'high' && b.priority == 'high') return 1;
+      return b.estimatedRevenue.compareTo(a.estimatedRevenue);
+    });
+
+    return actions.take(7).toList();
+  }
+
+  // ========== Feature 4: Email Generation ==========
+  String generateEmail({
+    required ClientData client,
+    required String purpose,
+    required String tone,
+  }) {
+    final greetings = {
+      'formal': 'Dear ${client.decisionMakers.isNotEmpty ? client.decisionMakers.first.split(' ').first : 'Valued Client'}',
+      'friendly': 'Hi ${client.decisionMakers.isNotEmpty ? client.decisionMakers.first.split(' ').first : 'there'}',
+      'urgent': 'Dear ${client.decisionMakers.isNotEmpty ? client.decisionMakers.first.split(' ').first : 'Valued Client'}',
+    };
+
+    final closings = {
+      'formal': 'Sincerely,\n${client.relationshipManager}',
+      'friendly': 'Best regards,\n${client.relationshipManager}',
+      'urgent': 'Please let me know at your earliest convenience.\n\nBest regards,\n${client.relationshipManager}',
+    };
+
+    String body = '';
+    if (purpose == 'portfolio_review') {
+      body = 'I hope this message finds you well.\n\n'
+          'Given the recent market developments, I wanted to reach out to schedule a portfolio review. '
+          'I\'ve prepared some insights specific to your holdings that I believe you\'ll find valuable.\n\n'
+          'Would you be available for a call next week? I\'m flexible with timing and happy to accommodate your schedule.';
+    } else if (purpose == 'product_introduction') {
+      body = 'I wanted to bring to your attention a new investment opportunity that aligns well with your objectives.\n\n'
+          'Based on our understanding of your portfolio and goals, this offering could provide diversification '
+          'while maintaining your target risk profile. I\'d love to discuss the details with you.\n\n'
+          'Would you have 20 minutes this week for a brief overview?';
+    } else {
+      body = 'I\'m reaching out regarding your account. Please let me know a convenient time to connect.';
+    }
+
+    return '${greetings[tone] ?? greetings['formal']},\n\n$body\n\n${closings[tone] ?? closings['formal']}';
+  }
+
+  // ========== Feature 5: Report Generation ==========
+  Map<String, dynamic> generateReport({
+    required ClientData client,
+    required String reportType,
+  }) {
+    final report = <String, dynamic>{};
+    
+    report['title'] = '$reportType - ${client.name}';
+    report['generatedDate'] = DateTime.now();
+    report['preparedBy'] = client.relationshipManager;
+
+    if (reportType == 'Portfolio Review') {
+      report['sections'] = [
+        {
+          'title': 'Executive Summary',
+          'content': 'Your portfolio has demonstrated resilience in the current market environment. Overall performance is in line with benchmarks, with opportunities for optimization identified below.',
+        },
+        {
+          'title': 'Performance Analysis',
+          'content': 'YTD Return: +8.2%\nBenchmark: +7.5%\nOutperformance: +70 bps\n\nKey contributors: Equity allocation, Alternative investments',
+        },
+        {
+          'title': 'Recommendations',
+          'content': '1. Consider rebalancing to target allocation\n2. Evaluate ESG integration opportunities\n3. Review tax-loss harvesting before year-end',
+        },
+      ];
+    } else if (reportType == 'Market Outlook') {
+      report['sections'] = [
+        {
+          'title': 'Macro Environment',
+          'content': 'Central banks maintain accommodative stance. Inflation pressures moderating. Growth expectations stable.',
+        },
+        {
+          'title': 'Portfolio Implications',
+          'content': 'Current positioning appropriate. Consider tactical overweight to quality fixed income given rate environment.',
+        },
+      ];
+    }
+
+    return report;
+  }
+
+  // ========== Feature 6: Document Analysis ==========
+  Map<String, dynamic> analyzeDocument(String documentType) {
+    final analysis = <String, dynamic>{};
+    
+    if (documentType == 'tax_return') {
+      analysis['extractedData'] = {
+        'Gross Income': '\$2,450,000',
+        'Investment Income': '\$580,000',
+        'Tax Rate': '37%',
+        'State': 'California',
+      };
+      analysis['insights'] = [
+        'High investment income suggests opportunity for tax-efficient strategies',
+        'California residency - municipal bond strategy recommended',
+        'Income level qualifies for alternative investment minimums',
+      ];
+      analysis['opportunities'] = [
+        'Tax-loss harvesting program - potential \$40K annual savings',
+        'Opportunity zone investment for capital gains deferral',
+        'Charitable giving strategies via DAF',
+      ];
+    } else if (documentType == 'investment_statement') {
+      analysis['extractedData'] = {
+        'Total Assets': '\$12,500,000',
+        'Asset Allocation': 'Equity 60%, Fixed Income 30%, Alternatives 10%',
+        'YTD Performance': '+6.8%',
+      };
+      analysis['insights'] = [
+        'Allocation skewed toward equities - consider rebalancing',
+        'Limited alternative exposure - diversification opportunity',
+        'Performance lagging category average by 120 bps',
+      ];
+    }
+
+    return analysis;
+  }
+
+  // ========== Feature 7: Predictive Analytics ==========
+  Map<String, dynamic> predictChurnRisk(ClientData client) {
+    // Mock churn prediction logic
+    final risk = <String, dynamic>{};
+    
+    double riskScore = 0.0;
+    final List<String> riskFactors = [];
+    
+    // Factor 1: Revenue trend
+    if (client.totalRevenue < 1.0) {
+      riskScore += 0.2;
+      riskFactors.add('Below threshold revenue');
+    }
+    
+    // Factor 2: Engagement
+    riskScore += 0.15;
+    riskFactors.add('Limited recent interactions (45+ days)');
+    
+    // Factor 3: Compliance
+    if (client.kycStatus != ComplianceStatus.approved) {
+      riskScore += 0.3;
+      riskFactors.add('Compliance issues');
+    }
+
+    risk['score'] = riskScore.clamp(0.0, 1.0);
+    risk['level'] = riskScore > 0.7 ? 'High' : riskScore > 0.4 ? 'Medium' : 'Low';
+    risk['factors'] = riskFactors;
+    risk['retentionStrategies'] = [
+      'Schedule executive-level meeting',
+      'Present competitive benchmarking',
+      'Offer fee review and optimization',
+      'Introduce specialized product team',
+    ];
+
+    return risk;
+  }
+
+  List<LifeEvent> detectLifeEvents(ClientData client) {
+    final events = <LifeEvent>[];
+
+    // Mock life event detection
+    if (client.segment == ClientSegment.privateBanking) {
+      events.add(LifeEvent(
+        eventType: 'Education Planning',
+        description: 'Client mentioned daughter starting college in conversation',
+        source: 'Meeting notes analysis (2 weeks ago)',
+        suggestedProducts: ['529 Education Plan', 'Education Trust', 'Student Loan Refinancing'],
+        detectedDate: DateTime.now().subtract(const Duration(days: 14)),
+        confidence: 0.85,
+      ));
+    }
+
+    if (client.segment == ClientSegment.corporateBanking && 
+        client.corporateBankingData != null) {
+      final cb = client.corporateBankingData!;
+      if (cb.annualRevenue > 1000.0) {
+        events.add(LifeEvent(
+          eventType: 'Business Expansion',
+          description: 'Revenue growth +35% YoY suggests expansion phase',
+          source: 'Financial statement analysis',
+          suggestedProducts: ['Acquisition Financing', 'Working Capital Facility', 'FX Solutions'],
+          detectedDate: DateTime.now().subtract(const Duration(days: 7)),
+          confidence: 0.78,
+        ));
+      }
+    }
+
+    return events;
+  }
+
+  // ========== Feature 8: Market Intelligence ==========
+  List<MarketAlert> generateMarketAlerts(List<ClientData> clients) {
+    final alerts = <MarketAlert>[];
+
+    alerts.add(MarketAlert(
+      title: 'Fed Rate Decision Impact',
+      summary: 'Federal Reserve holds rates steady. Impact on floating-rate exposures and refinancing opportunities.',
+      affectedClientIds: clients.take(12).map((c) => c.id).toList(),
+      impact: 'Moderate - favorable for refinancing, neutral for carry trades',
+      talkingPoints: [
+        'Opportunity to lock in favorable long-term rates',
+        'Review floating rate exposure in portfolio',
+        'Consider interest rate hedging strategies',
+      ],
+      timestamp: DateTime.now().subtract(const Duration(hours: 2)),
+    ));
+
+    alerts.add(MarketAlert(
+      title: 'Tech Sector Volatility',
+      summary: 'Increased volatility in tech sector following regulatory announcements. Down 3.5% this week.',
+      affectedClientIds: clients.where((c) => 
+        c.segment == ClientSegment.privateBanking || 
+        c.segment == ClientSegment.institutional
+      ).take(8).map((c) => c.id).toList(),
+      impact: 'High - clients with significant tech exposure',
+      talkingPoints: [
+        'Long-term fundamentals remain strong',
+        'Potential buying opportunity for quality names',
+        'Review sector allocation targets',
+      ],
+      timestamp: DateTime.now().subtract(const Duration(hours: 6)),
+    ));
+
+    return alerts;
+  }
+
+  // ========== Feature 9: Task Prioritization ==========
+  List<Map<String, dynamic>> prioritizeTasks(List<Map<String, dynamic>> tasks, List<ClientData> clients) {
+    // AI-powered smart task prioritization
+    for (var task in tasks) {
+      double priorityScore = 0.0;
+      
+      // Factor in revenue
+      if (task['revenue'] != null) {
+        priorityScore += (task['revenue'] as double) * 10;
+      }
+      
+      // Factor in urgency
+      if (task['dueDate'] != null) {
+        final daysUntil = (task['dueDate'] as DateTime).difference(DateTime.now()).inDays;
+        if (daysUntil < 3) priorityScore += 50;
+        else if (daysUntil < 7) priorityScore += 30;
+        else if (daysUntil < 14) priorityScore += 15;
+      }
+      
+      // Factor in relationship importance
+      if (task['clientId'] != null) {
+        final client = clients.firstWhere(
+          (c) => c.id == task['clientId'],
+          orElse: () => clients.first,
+        );
+        if (client.totalRevenue > 3.0) priorityScore += 25;
+        else if (client.totalRevenue > 1.5) priorityScore += 15;
+      }
+      
+      task['aiPriorityScore'] = priorityScore;
+    }
+    
+    tasks.sort((a, b) => 
+      (b['aiPriorityScore'] as double).compareTo(a['aiPriorityScore'] as double)
+    );
+    
+    return tasks;
+  }
+}
+
+// ============================================================================
+// MOCK DATA
+// ============================================================================
+
+// ============================================================================
+// ENHANCED MOCK DATA
+// ============================================================================
+
+class MockBankingData {
+  static final List<ClientData> enhancedClients = [
+    // Private Banking Client
+    ClientData(
+      id: 'PB001',
+      name: 'Wellington Family Office',
+      segment: ClientSegment.privateBanking,
+      tier: 'Ultra High Net Worth',
+      relationshipManager: 'Priya Singh',
+      jurisdiction: 'United States',
+      kycStatus: ComplianceStatus.approved,
+      kycExpiryDate: DateTime.now().add(const Duration(days: 270)),
+      riskRating: RiskRating.low,
+      totalRevenue: 2.8,
+      walletByProduct: {
+        ProductCategory.wealth: 1.8,
+        ProductCategory.lending: 0.5,
+        ProductCategory.advisory: 0.3,
+        ProductCategory.structuredProducts: 0.2,
+      },
+      privateBankingData: PrivateBankingData(
+        netWorth: 850.0,
+        aum: 420.0,
+        familyStructure: 'Multi-generational (3 generations)',
+        trustEntities: ['Wellington Family Trust', 'Education Trust', 'Charitable Foundation'],
+        assetAllocation: {
+          'Public Equities': 35.0,
+          'Private Equity': 25.0,
+          'Real Estate': 20.0,
+          'Fixed Income': 12.0,
+          'Alternatives': 8.0,
+        },
+        investmentObjective: 'Wealth preservation with moderate growth',
+        taxJurisdiction: 'US (Multi-state)',
+        estatePlanningActive: true,
+        familyMembers: 12,
+        generationFocus: 'G2 transition planning to G3',
+      ),
+      decisionMakers: ['Victoria Wellington (Matriarch)', 'Marcus Wellington (G2)', 'CFO - David Chen'],
+      subsidiaries: ['Wellington Ventures LLC', 'Wellington Properties LP'],
+    ),
+    
+    // Corporate Banking Client
+    ClientData(
+      id: 'CB001',
+      name: 'Global Industrials Corp',
+      segment: ClientSegment.corporateBanking,
+      tier: 'Tier 1',
+      relationshipManager: 'Alex Carter',
+      jurisdiction: 'United States',
+      kycStatus: ComplianceStatus.approved,
+      kycExpiryDate: DateTime.now().add(const Duration(days: 180)),
+      riskRating: RiskRating.medium,
+      totalRevenue: 4.2,
+      walletByProduct: {
+        ProductCategory.lending: 1.5,
+        ProductCategory.markets: 0.9,
+        ProductCategory.cashManagement: 0.8,
+        ProductCategory.advisory: 0.7,
+        ProductCategory.structuredProducts: 0.3,
+      },
+      corporateBankingData: CorporateBankingData(
+        annualRevenue: 3800.0,
+        ebitda: 520.0,
+        employeeCount: 12500,
+        industrySector: 'Industrials & Manufacturing',
+        workingCapitalNeeds: 450.0,
+        creditRating: 'BBB+',
+        tradeFinanceVolume: 280.0,
+        productUtilization: {
+          'Revolving Credit Facility': 650.0,
+          'Term Loan': 800.0,
+          'FX Hedging': 320.0,
+          'Interest Rate Swaps': 150.0,
+        },
+        cashBalance: 185.0,
+        treasuryComplexity: 'High - multi-currency operations',
+      ),
+      decisionMakers: ['CFO - Sarah Mitchell', 'Treasurer - James Park', 'CEO - Robert Chen'],
+      subsidiaries: ['Global Logistics Inc', 'Industrial Components Ltd', 'GI Europe GmbH'],
+    ),
+
+    // Institutional - Sovereign Wealth Fund
+    ClientData(
+      id: 'IN001',
+      name: 'Nordic Sovereign Fund',
+      segment: ClientSegment.institutional,
+      tier: 'Strategic',
+      relationshipManager: 'Anders Bergström',
+      jurisdiction: 'Norway',
+      kycStatus: ComplianceStatus.approved,
+      kycExpiryDate: DateTime.now().add(const Duration(days: 365)),
+      riskRating: RiskRating.low,
+      totalRevenue: 8.5,
+      walletByProduct: {
+        ProductCategory.custody: 3.2,
+        ProductCategory.markets: 2.8,
+        ProductCategory.primeBrokerage: 1.5,
+        ProductCategory.advisory: 0.8,
+        ProductCategory.structuredProducts: 0.2,
+      },
+      institutionalBankingData: InstitutionalBankingData(
+        aum: 125000.0,
+        assetAllocation: {
+          'Global Equities': 60.0,
+          'Fixed Income': 25.0,
+          'Real Estate': 10.0,
+          'Infrastructure': 5.0,
+        },
+        investmentMandate: 'Long-term value preservation and growth',
+        regulatoryFramework: 'UCITS compliant',
+        benchmark: 'MSCI World + Custom',
+        investmentHorizon: '30+ years',
+        custodyVolume: 118000.0,
+        esgFocused: true,
+        institutionType: 'Sovereign Wealth Fund',
+      ),
+      decisionMakers: ['CIO - Erik Johannsen', 'Head of Equities - Maria Olsen'],
+    ),
+
+    // Institutional - Pension Fund
+    ClientData(
+      id: 'IN002',
+      name: 'Teachers Retirement System',
+      segment: ClientSegment.institutional,
+      tier: 'Core',
+      relationshipManager: 'Jennifer Wu',
+      jurisdiction: 'United States',
+      kycStatus: ComplianceStatus.approved,
+      kycExpiryDate: DateTime.now().add(const Duration(days: 210)),
+      riskRating: RiskRating.low,
+      totalRevenue: 3.2,
+      walletByProduct: {
+        ProductCategory.custody: 1.2,
+        ProductCategory.markets: 0.9,
+        ProductCategory.advisory: 0.6,
+        ProductCategory.structuredProducts: 0.5,
+      },
+      institutionalBankingData: InstitutionalBankingData(
+        aum: 42000.0,
+        assetAllocation: {
+          'Domestic Equities': 40.0,
+          'International Equities': 20.0,
+          'Fixed Income': 30.0,
+          'Alternatives': 10.0,
+        },
+        investmentMandate: 'Meet long-term pension obligations',
+        regulatoryFramework: 'ERISA compliant',
+        benchmark: '60/40 Equity/Bond blend',
+        investmentHorizon: '20+ years',
+        custodyVolume: 39000.0,
+        esgFocused: true,
+        institutionType: 'Public Pension Fund',
+      ),
+      decisionMakers: ['CIO - Michael Roberts', 'Director of Investments - Lisa Chang'],
+    ),
+
+    // Corporate Banking - Tech Company
+    ClientData(
+      id: 'CB002',
+      name: 'CloudTech Innovations',
+      segment: ClientSegment.corporateBanking,
+      tier: 'Tier 2',
+      relationshipManager: 'Jamie Lee',
+      jurisdiction: 'United States',
+      kycStatus: ComplianceStatus.approved,
+      kycExpiryDate: DateTime.now().add(const Duration(days: 240)),
+      riskRating: RiskRating.medium,
+      totalRevenue: 1.9,
+      walletByProduct: {
+        ProductCategory.cashManagement: 0.7,
+        ProductCategory.lending: 0.5,
+        ProductCategory.markets: 0.4,
+        ProductCategory.advisory: 0.3,
+      },
+      corporateBankingData: CorporateBankingData(
+        annualRevenue: 650.0,
+        ebitda: 95.0,
+        employeeCount: 2400,
+        industrySector: 'Technology - SaaS',
+        workingCapitalNeeds: 80.0,
+        creditRating: 'BB+',
+        tradeFinanceVolume: 35.0,
+        productUtilization: {
+          'Revolving Credit Facility': 120.0,
+          'Equipment Financing': 45.0,
+          'FX Hedging': 60.0,
+        },
+        cashBalance: 95.0,
+        treasuryComplexity: 'Medium - growing international presence',
+      ),
+      decisionMakers: ['CFO - Amelia Rodriguez', 'CEO - Tom Zhang'],
+      subsidiaries: ['CloudTech Europe', 'CloudTech APAC'],
+    ),
+
+    // Private Banking - Entrepreneur
+    ClientData(
+      id: 'PB002',
+      name: 'Martinez Family',
+      segment: ClientSegment.privateBanking,
+      tier: 'High Net Worth',
+      relationshipManager: 'Priya Singh',
+      jurisdiction: 'United States',
+      kycStatus: ComplianceStatus.approved,
+      kycExpiryDate: DateTime.now().add(const Duration(days: 300)),
+      riskRating: RiskRating.medium,
+      totalRevenue: 0.9,
+      walletByProduct: {
+        ProductCategory.wealth: 0.5,
+        ProductCategory.lending: 0.25,
+        ProductCategory.advisory: 0.1,
+        ProductCategory.cashManagement: 0.05,
+      },
+      privateBankingData: PrivateBankingData(
+        netWorth: 125.0,
+        aum: 58.0,
+        familyStructure: 'Nuclear family with adult children',
+        trustEntities: ['Martinez Irrevocable Trust'],
+        assetAllocation: {
+          'Public Equities': 45.0,
+          'Private Equity': 15.0,
+          'Real Estate': 25.0,
+          'Fixed Income': 10.0,
+          'Cash': 5.0,
+        },
+        investmentObjective: 'Growth with income',
+        taxJurisdiction: 'California',
+        estatePlanningActive: true,
+        familyMembers: 4,
+        generationFocus: 'First generation wealth',
+      ),
+       decisionMakers: ['Carlos Martinez (Principal)', 'Elena Martinez (Spouse)'],
+    ),
+
+    // ==================== INVESTMENT BANKING ====================
+    
+    // IB Client 1: TechCorp Inc - Public tech company (M&A buy-side active)
+    ClientData(
+      id: 'IB001',
+      name: 'TechCorp Inc.',
+      segment: ClientSegment.investmentBanking,
+      tier: 'Strategic',
+      relationshipManager: 'Michael Chen',
+      jurisdiction: 'Delaware',
+      kycStatus: ComplianceStatus.approved,
+      kycExpiryDate: DateTime.now().add(const Duration(days: 180)),
+      riskRating: RiskRating.low,
+      totalRevenue: 2.8,
+      walletByProduct: {
+        ProductCategory.advisory: 1.2,
+        ProductCategory.markets: 0.8,
+        ProductCategory.cashManagement: 0.5,
+        ProductCategory.structuredProducts: 0.3,
+      },
+      investmentBankingData: InvestmentBankingData(
+        companyType: 'Public',
+        marketCap: 12500.0, // $12.5B
+        ticker: 'TECH',
+        sponsor: null,
+        sectors: ['Technology', 'Software'],
+        transactionHistory: [
+          PastTransaction(
+            transactionName: 'Acquisition of CloudAI Inc.',
+            type: DealType.maAdvisory,
+            value: 850.0,
+            closeDate: DateTime(2023, 6, 15),
+            role: 'Lead M&A Advisor',
+            fee: 1.1,
+          ),
+          PastTransaction(
+            transactionName: '\$500M Senior Notes Offering',
+            type: DealType.dcm,
+            value: 500.0,
+            closeDate: DateTime(2022, 11, 20),
+            role: 'Joint Bookrunner',
+            fee: 0.35,
+          ),
+        ],
+        activeMandate: true,
+        boardMembers: ['Sarah Johnson (CEO)', 'David Park (CFO)', 'Lisa Chen (COO)'],
+        strategicPriority: 'Inorganic growth through acquisitions',
+      ),
+      decisionMakers: ['Sarah Johnson (CEO)', 'David Park (CFO)', 'Board M&A Committee'],
+    ),
+
+    // IB Client 2: MedDevice Solutions - PE-backed portfolio company (exit planning)
+    ClientData(
+      id: 'IB002',
+      name: 'MedDevice Solutions',
+      segment: ClientSegment.investmentBanking,
+      tier: 'Core',
+      relationshipManager: 'Jennifer Rodriguez',
+      jurisdiction: 'Massachusetts',
+      kycStatus: ComplianceStatus.approved,
+      kycExpiryDate: DateTime.now().add(const Duration(days: 270)),
+      riskRating: RiskRating.medium,
+      totalRevenue: 1.5,
+      walletByProduct: {
+        ProductCategory.advisory: 0.9,
+        ProductCategory.leveragedFinance: 0.4,
+        ProductCategory.cashManagement: 0.2,
+      },
+      investmentBankingData: InvestmentBankingData(
+        companyType: 'Portfolio Company',
+        marketCap: null,
+        ticker: null,
+        sponsor: 'Vista Equity Partners',
+        sectors: ['Healthcare', 'Medical Devices'],
+        transactionHistory: [
+          PastTransaction(
+            transactionName: 'LBO Financing - Vista Acquisition',
+            type: DealType.leveragedFinance,
+            value: 380.0,
+            closeDate: DateTime(2020, 3, 10),
+            role: 'Lead Arranger',
+            fee: 0.65,
+          ),
+        ],
+        activeMandate: true,
+        boardMembers: ['Robert Kim (CEO)', 'Vista Partner Rep', 'Industry Expert Director'],
+        strategicPriority: 'IPO preparation for 2025 exit',
+      ),
+      decisionMakers: ['Robert Kim (CEO)', 'Vista Partners', 'Board'],
+    ),
+  ];
+
+  // Enhanced opportunities with segment-specific types
+  static final List<OpportunityData> enhancedOpportunities = [
+    // Private Banking opportunity
+    OpportunityData(
+      id: 'OPP001',
+      clientId: 'PB001',
+      title: 'Increase Wealth Management Mandate',
+      productCategory: ProductCategory.wealth,
+      estimatedRevenue: 0.25,
+      probability: 0.75,
+      stage: 'Proposal',
+      expectedCloseDate: DateTime.now().add(const Duration(days: 45)),
+      description: 'Opportunity to increase AUM by \$50M through consolidation of external assets',
+      teamMembers: ['Priya Singh', 'Portfolio Manager - Sarah Kim'],
+    ),
+    // Corporate opportunity
+    OpportunityData(
+      id: 'OPP002',
+      clientId: 'CB001',
+      title: 'M&A Advisory - Acquisition Financing',
+      productCategory: ProductCategory.advisory,
+      estimatedRevenue: 1.2,
+      probability: 0.60,
+      stage: 'Qualified',
+      expectedCloseDate: DateTime.now().add(const Duration(days: 90)),
+      description: '\$800M acquisition financing opportunity with advisory mandate',
+      teamMembers: ['Alex Carter', 'M&A Lead - Richard Stone', 'Credit - Julia Park'],
+    ),
+    // Institutional opportunity
+    OpportunityData(
+      id: 'OPP003',
+      clientId: 'IN001',
+      title: 'ESG Structured Products',  
+      productCategory: ProductCategory.structuredProducts,
+      estimatedRevenue: 0.45,
+      probability: 0.80,
+      stage: 'Negotiation',
+      expectedCloseDate: DateTime.now().add(const Duration(days: 30)),
+      description: 'Custom ESG-linked structured note program',
+      teamMembers: ['Anders Bergström', 'Structuring - David Wu'],
+    ),
+  ];
+}
+
+void main() {
+  runApp(const InsightEngineApp());
+}
+
+class InsightEngineApp extends StatefulWidget {
+  const InsightEngineApp({super.key});
+
+  @override
+  State<InsightEngineApp> createState() => _InsightEngineAppState();
+}
+
+class _InsightEngineAppState extends State<InsightEngineApp> {
+  ThemeMode _mode = ThemeMode.dark; // default: dark
+
+  void _toggleTheme() {
+    setState(() {
+      _mode = _mode == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final darkTheme = ThemeData(
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: const Color(0xFF0F4C81),
+        brightness: Brightness.dark,
+        primary: const Color(0xFF0F4C81),
+        secondary: const Color(0xFF00E5FF),
+        surface: const Color(0xFF0B1020),
+        background: const Color(0xFF050814),
+      ),
+      useMaterial3: true,
+      scaffoldBackgroundColor: const Color(0xFF050814),
+      cardTheme: CardThemeData(
+        color: const Color(0xFF0B1020),
+        elevation: 8,
+        shadowColor: Colors.black.withOpacity(0.3),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+      ),
+      appBarTheme: const AppBarTheme(
+        backgroundColor: Color(0xFF050814),
+        elevation: 0,
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: const Color(0xFF0F4C81),
+          foregroundColor: Colors.white,
+          elevation: 4,
+          shadowColor: const Color(0xFF0F4C81).withOpacity(0.4),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          textStyle: GoogleFonts.inter(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.3,
+          ),
+        ),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          foregroundColor: const Color(0xFF00E5FF),
+          side: const BorderSide(color: Color(0xFF00E5FF), width: 1.5),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          textStyle: GoogleFonts.inter(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.3,
+          ),
+        ),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        isDense: true,
+        filled: true,
+        fillColor: Colors.white.withOpacity(0.05),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.white.withOpacity(0.1)),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.white.withOpacity(0.1)),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Color(0xFF00E5FF), width: 2),
+        ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      ),
+      textTheme: GoogleFonts.interTextTheme(
+        ThemeData.dark().textTheme.copyWith(
+          displayLarge: GoogleFonts.inter(
+            fontSize: 32,
+            fontWeight: FontWeight.bold,
+            letterSpacing: -0.5,
+            color: Colors.white,
+          ),
+          displayMedium: GoogleFonts.inter(
+            fontSize: 28,
+            fontWeight: FontWeight.bold,
+            letterSpacing: -0.5,
+            color: Colors.white,
+          ),
+          displaySmall: GoogleFonts.inter(
+            fontSize: 24,
+            fontWeight: FontWeight.w600,
+            letterSpacing: -0.3,
+            color: Colors.white,
+          ),
+          headlineLarge: GoogleFonts.inter(
+            fontSize: 22,
+            fontWeight: FontWeight.w600,
+            letterSpacing: -0.3,
+            color: Colors.white,
+          ),
+          headlineMedium: GoogleFonts.inter(
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+            letterSpacing: -0.2,
+            color: Colors.white,
+          ),
+          headlineSmall: GoogleFonts.inter(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
+          ),
+          titleLarge: GoogleFonts.inter(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.1,
+            color: Colors.white,
+          ),
+          titleMedium: GoogleFonts.inter(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.1,
+            color: Colors.white,
+          ),
+          titleSmall: GoogleFonts.inter(
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.1,
+            color: Colors.white,
+          ),
+          bodyLarge: GoogleFonts.inter(
+            fontSize: 14,
+            fontWeight: FontWeight.w400,
+            letterSpacing: 0.2,
+            color: Colors.white.withOpacity(0.9),
+          ),
+          bodyMedium: GoogleFonts.inter(
+            fontSize: 13,
+            fontWeight: FontWeight.w400,
+            letterSpacing: 0.2,
+            color: Colors.white.withOpacity(0.9),
+          ),
+          bodySmall: GoogleFonts.inter(
+            fontSize: 12,
+            fontWeight: FontWeight.w400,
+            letterSpacing: 0.2,
+            color: Colors.white.withOpacity(0.7),
+          ),
+          labelLarge: GoogleFonts.inter(
+            fontSize: 13,
+            fontWeight: FontWeight.w500,
+            letterSpacing: 0.3,
+            color: Colors.white.withOpacity(0.9),
+          ),
+          labelMedium: GoogleFonts.inter(
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+            letterSpacing: 0.3,
+            color: Colors.white.withOpacity(0.8),
+          ),
+          labelSmall: GoogleFonts.inter(
+            fontSize: 11,
+            fontWeight: FontWeight.w500,
+            letterSpacing: 0.3,
+            color: Colors.white.withOpacity(0.7),
+          ),
+        ),
+      ),
+    );
+
+    final lightTheme = ThemeData(
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: const Color(0xFF0F4C81),
+        brightness: Brightness.light,
+        primary: const Color(0xFF0F4C81),
+        secondary: const Color(0xFF00BCD4),
+        surface: Colors.white,
+        background: const Color(0xFFF5F7FB),
+      ),
+      useMaterial3: true,
+      scaffoldBackgroundColor: const Color(0xFFF5F7FB),
+      cardTheme: CardThemeData(
+        color: Colors.white,
+        elevation: 4,
+        shadowColor: Colors.black.withOpacity(0.08),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+      ),
+      appBarTheme: const AppBarTheme(
+        backgroundColor: Colors.white,
+        elevation: 0,
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: const Color(0xFF0F4C81),
+          foregroundColor: Colors.white,
+          elevation: 3,
+          shadowColor: const Color(0xFF0F4C81).withOpacity(0.3),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          textStyle: GoogleFonts.inter(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.3,
+          ),
+        ),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          foregroundColor: const Color(0xFF0F4C81),
+          side: const BorderSide(color: Color(0xFF0F4C81), width: 1.5),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          textStyle: GoogleFonts.inter(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.3,
+          ),
+        ),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        isDense: true,
+        filled: true,
+        fillColor: Colors.grey[50],
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey[300]!),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey[300]!),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Color(0xFF0F4C81), width: 2),
+        ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      ),
+      textTheme: GoogleFonts.interTextTheme(
+        ThemeData.light().textTheme.copyWith(
+          displayLarge: GoogleFonts.inter(
+            fontSize: 32,
+            fontWeight: FontWeight.bold,
+            letterSpacing: -0.5,
+            color: const Color(0xFF1A1A1A),
+          ),
+          displayMedium: GoogleFonts.inter(
+            fontSize: 28,
+            fontWeight: FontWeight.bold,
+            letterSpacing: -0.5,
+            color: const Color(0xFF1A1A1A),
+          ),
+          displaySmall: GoogleFonts.inter(
+            fontSize: 24,
+            fontWeight: FontWeight.w600,
+            letterSpacing: -0.3,
+            color: const Color(0xFF1A1A1A),
+          ),
+          headlineLarge: GoogleFonts.inter(
+            fontSize: 22,
+            fontWeight: FontWeight.w600,
+            letterSpacing: -0.3,
+            color: const Color(0xFF1A1A1A),
+          ),
+          headlineMedium: GoogleFonts.inter(
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+            letterSpacing: -0.2,
+            color: const Color(0xFF1A1A1A),
+          ),
+          headlineSmall: GoogleFonts.inter(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            color: const Color(0xFF1A1A1A),
+          ),
+          titleLarge: GoogleFonts.inter(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.1,
+            color: const Color(0xFF1A1A1A),
+          ),
+          titleMedium: GoogleFonts.inter(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.1,
+            color: const Color(0xFF1A1A1A),
+          ),
+          titleSmall: GoogleFonts.inter(
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.1,
+            color: const Color(0xFF1A1A1A),
+          ),
+          bodyLarge: GoogleFonts.inter(
+            fontSize: 14,
+            fontWeight: FontWeight.w400,
+            letterSpacing: 0.2,
+            color: const Color(0xFF2A2A2A),
+          ),
+          bodyMedium: GoogleFonts.inter(
+            fontSize: 13,
+            fontWeight: FontWeight.w400,
+            letterSpacing: 0.2,
+            color: const Color(0xFF2A2A2A),
+          ),
+          bodySmall: GoogleFonts.inter(
+            fontSize: 12,
+            fontWeight: FontWeight.w400,
+            letterSpacing: 0.2,
+            color: const Color(0xFF666666),
+          ),
+          labelLarge: GoogleFonts.inter(
+            fontSize: 13,
+            fontWeight: FontWeight.w500,
+            letterSpacing: 0.3,
+            color: const Color(0xFF2A2A2A),
+          ),
+          labelMedium: GoogleFonts.inter(
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+            letterSpacing: 0.3,
+            color: const Color(0xFF4A4A4A),
+          ),
+          labelSmall: GoogleFonts.inter(
+            fontSize: 11,
+            fontWeight: FontWeight.w500,
+            letterSpacing: 0.3,
+            color: const Color(0xFF666666),
+          ),
+        ),
+      ),
+    );
+
+    return MaterialApp(
+      title: 'InsightEngine',
+      debugShowCheckedModeBanner: false,
+      themeMode: _mode,
+      theme: lightTheme,
+      darkTheme: darkTheme,
+      home: InsightEngineShell(
+        onToggleTheme: _toggleTheme,
+        isDarkMode: _mode == ThemeMode.dark,
+      ),
+    );
+  }
+}
+
+class InsightEngineShell extends StatefulWidget {
+  final VoidCallback onToggleTheme;
+  final bool isDarkMode;
+
+  const InsightEngineShell({
+    super.key,
+    required this.onToggleTheme,
+    required this.isDarkMode,
+  });
+
+  @override
+  State<InsightEngineShell> createState() => _InsightEngineShellState();
+}
+
+enum InsightPage {
+  overview,
+  clients,
+  opportunities,
+  deals,
+  triggers,
+  acceleratedInsights,
+  segmentAnalytics,
+  compliance,
+  roleBased,
+  walletOptimization,
+  dueDiligence,
+  contentGeneration,
+  inboxInsights,
+  settings,
+}
+
+class _InsightEngineShellState extends State<InsightEngineShell> {
+  InsightPage _currentPage = InsightPage.overview;
+  bool _botOpen = true;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  
+  // Enhanced responsive breakpoints following Material Design guidelines
+  bool get _isMobile => MediaQuery.of(context).size.width < 600;
+  
+  bool get _isTablet {
+    final width = MediaQuery.of(context).size.width;
+    return width >= 600 && width < 1024;
+  }
+  
+  bool get _isDesktop => MediaQuery.of(context).size.width >= 1024;
+  
+  // Backward compatibility: consider both mobile and tablet as "mobile" for drawer
+  bool get _shouldUseDrawer => MediaQuery.of(context).size.width < 768;
+
+  String get _pageTitle {
+    switch (_currentPage) {
+      case InsightPage.overview:
+        return 'Banker Workspace';
+      case InsightPage.clients:
+        return 'Client 360';
+      case InsightPage.opportunities:
+        return 'Opportunities & Ideas';
+      case InsightPage.deals:
+        return 'Deals Pipeline';
+      case InsightPage.acceleratedInsights:
+        return 'Accelerated Insights';
+      case InsightPage.triggers:
+        return 'Trigger Events & Alerts';
+      case InsightPage.walletOptimization:
+        return 'Wallet & Capital Optimization';
+      case InsightPage.dueDiligence:
+        return 'Transactions & Due Diligence';
+      case InsightPage.segmentAnalytics:
+        return 'Segment Analytics';
+      case InsightPage.compliance:
+        return 'Regulatory Compliance';
+      case InsightPage.roleBased:
+        return 'Role-Based View';
+      case InsightPage.contentGeneration:
+        return 'Pitch & Document Generation Studio';
+      case InsightPage.inboxInsights:
+        return 'Inbox & Insight Summaries';
+      case InsightPage.settings:
+        return 'Settings & Personalisation';
+    }
+  }
+
+  String get _pageSubtitle {
+    switch (_currentPage) {
+      case InsightPage.overview:
+        return 'Welcome, Banker – your day at a glance with key updates and tasks.';
+      case InsightPage.clients:
+        return 'Search and explore Client 360 views across portfolios, products, and interactions.';
+      case InsightPage.opportunities:
+        return 'Review GenAI-ranked ideas and convert them into client outreach and pipeline.';
+      case InsightPage.deals:
+        return 'Track your investment banking deal pipeline and M&A opportunities.';
+      case InsightPage.acceleratedInsights:
+        return 'Generate executive-ready summaries from complex financial and market data.';
+      case InsightPage.triggers:
+        return 'Stay ahead of market and client events with auto-generated impact briefs.';
+      case InsightPage.walletOptimization:
+        return 'Scan wallet gaps and capital structure to surface revenue opportunities.';
+      case InsightPage.dueDiligence:
+        return 'Streamline transaction review and due diligence with AI-powered analysis.';
+      case InsightPage.segmentAnalytics:
+        return 'View performance metrics tailored to each banking segment.';
+      case InsightPage.compliance:
+        return 'Track KYC renewals, risk ratings, and regulatory requirements.';
+      case InsightPage.roleBased:
+        return 'Personalized dashboard based on your role (RM, Coverage, Product, Compliance).';
+      case InsightPage.contentGeneration:
+        return 'Draft pitch materials and deal documentation using structured inputs.';
+      case InsightPage.inboxInsights:
+        return 'Let GenAI summarise internal updates and news into client-ready actions.';
+      case InsightPage.settings:
+        return 'Tune InsightEngine to your coverage, preferences, and notification patterns.';
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_shouldUseDrawer) {
+      return Scaffold(
+        key: _scaffoldKey,
+        drawer: Drawer(
+          width: 280,
+          child: _buildSidebar(),
+        ),
+        body: SafeArea(
+          child: Stack(
+            children: [
+              Column(
+                children: [
+                  _buildTopBar(),
+                  const Divider(height: 1),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: _buildPageBody(),
+                    ),
+                  ),
+                ],
+              ),
+              _buildBotAssist(),
+            ],
+          ),
+        ),
+      );
+    }
+    
+    return Scaffold(
+      body: SafeArea(
+        child: Stack(
+          children: [
+            Row(
+              children: [
+                _buildSidebar(),
+                Expanded(
+                  child: Container(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    child: Column(
+                      children: [
+                        _buildTopBar(),
+                        const Divider(height: 1),
+                        Expanded(
+                          child: SingleChildScrollView(
+                            child: _buildPageBody(),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            _buildBotAssist(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSidebar() {
+    final isInDrawer = _shouldUseDrawer;
+    final isDark = widget.isDarkMode;
+    final width = MediaQuery.of(context).size.width;
+    
+    return Container(
+      width: isInDrawer 
+          ? double.infinity 
+          : (width < 1024 ? 240 : 270), // Narrower on smaller desktop screens
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        border: isInDrawer ? null : Border(
+          right: BorderSide(
+            color: isDark ? Colors.white.withOpacity(0.08) : Colors.black.withOpacity(0.08),
+            width: 1,
+          ),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Premium gradient header
+          Container(
+            padding: const EdgeInsets.fromLTRB(20, 16, 20, 16), // Reduced from 24
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: isDark
+                  ? [
+                      const Color(0xFF0F4C81),
+                      const Color(0xFF0A1628),
+                    ]
+                  : [
+                      const Color(0xFF0F4C81),
+                      const Color(0xFF1565C0),
+                    ],
+              ),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.15),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(
+                    Icons.insights,
+                    color: Colors.white,
+                    size: 28,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'InsightEngine',
+                        style: GoogleFonts.inter(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          letterSpacing: -0.3,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        'GenAI Copilot for Bankers',
+                        style: GoogleFonts.inter(
+                          fontSize: 11,
+                          color: Colors.white.withOpacity(0.85),
+                          letterSpacing: 0.2,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          
+          // Scrollable menu items section
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Text(
+                      'Workspace',
+                      style: TextStyle(
+                        fontSize: 11,
+                        letterSpacing: 0.8,
+                        color: widget.isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  _navItem(
+                    label: 'Overview',
+                    icon: Icons.dashboard_outlined,
+                    page: InsightPage.overview,
+                  ),
+                  _navItem(
+                    label: 'Clients',
+                    icon: Icons.account_circle_outlined,
+                    page: InsightPage.clients,
+                  ),
+                  _navItem(
+                    label: 'Opportunities',
+                    icon: Icons.lightbulb_outline,
+                    page: InsightPage.opportunities,
+                  ),
+                  _navItem(
+                    label: 'Deals',
+                    icon: Icons.handshake_outlined,
+                    page: InsightPage.deals,
+                  ),
+                  const SizedBox(height: 16),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Text(
+                      'Analytical Workflows',
+                      style: TextStyle(
+                        fontSize: 11,
+                        letterSpacing: 0.8,
+                        color: widget.isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+          _navItem(
+            label: 'Accelerated Insights',
+            icon: Icons.bolt_outlined,
+            page: InsightPage.acceleratedInsights,
+          ),
+          _navItem(
+            label: 'Trigger Events',
+            icon: Icons.notifications_active_outlined,
+            page: InsightPage.triggers,
+          ),
+          _navItem(
+            label: 'Segment Analytics',
+            icon: Icons.bar_chart_outlined,
+            page: InsightPage.segmentAnalytics,
+          ),
+          _navItem(
+            label: 'Compliance',
+            icon: Icons.shield_outlined,
+            page: InsightPage.compliance,
+          ),
+          _navItem(
+            label: 'Role-Based View',
+            icon: Icons.person_outline,
+            page: InsightPage.roleBased,
+          ),
+          _navItem(
+            label: 'Wallet & Capital',
+
+            icon: Icons.account_balance_wallet_outlined,
+            page: InsightPage.walletOptimization,
+          ),
+          _navItem(
+            label: 'Transactions & DD',
+            icon: Icons.fact_check_outlined,
+            page: InsightPage.dueDiligence,
+          ),
+          _navItem(
+            label: 'Pitch & Docs',
+            icon: Icons.slideshow_outlined,
+            page: InsightPage.contentGeneration,
+          ),
+          const SizedBox(height: 16),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Text(
+              'Insights & Settings',
+              style: TextStyle(
+                fontSize: 11,
+                letterSpacing: 0.8,
+                color: widget.isDarkMode ? Colors.grey[400] : Colors.grey[600],
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+          _navItem(
+            label: 'Inbox & Insights',
+            icon: Icons.mark_email_unread_outlined,
+            page: InsightPage.inboxInsights,
+          ),
+          _navItem(
+            label: 'Settings & Personalisation',
+            icon: Icons.settings_outlined,
+            page: InsightPage.settings,
+          ),
+          const SizedBox(height: 20),
+                ],
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Text(
+              'Prototype · Mocked GenAI\nFlutter Web-Responsive UI',
+              style: TextStyle(
+                fontSize: 11,
+                color: widget.isDarkMode ? Colors.grey[400] : Colors.grey[600],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _navItem({
+    required String label,
+    required IconData icon,
+    required InsightPage page,
+  }) {
+    final bool selected = _currentPage == page;
+    final isDark = widget.isDarkMode;
+    
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 3),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        decoration: BoxDecoration(
+          color: selected 
+            ? (isDark ? const Color(0xFF0F4C81).withOpacity(0.3) : const Color(0xFF0F4C81).withOpacity(0.1))
+            : Colors.transparent,
+          borderRadius: BorderRadius.circular(12),
+          border: selected
+            ? Border.all(
+                color: isDark ? const Color(0xFF00E5FF).withOpacity(0.3) : const Color(0xFF0F4C81).withOpacity(0.2),
+                width: 1,
+              )
+            : null,
+        ),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(12),
+            onTap: () {
+              setState(() => _currentPage = page);
+              if (_shouldUseDrawer) {
+                Navigator.of(context).pop(); // Close drawer on mobile/tablet
+              }
+            },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+              child: Row(
+                children: [
+                  Icon(
+                    icon,
+                    size: 20,
+                    color: selected 
+                      ? (isDark ? const Color(0xFF00E5FF) : const Color(0xFF0F4C81))
+                      : (isDark ? Colors.grey[400] : Colors.grey[600]),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      label,
+                      style: GoogleFonts.inter(
+                        fontSize: 13,
+                        fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
+                        letterSpacing: 0.1,
+                        color: selected
+                          ? (isDark ? Colors.white : const Color(0xFF0F4C81))
+                          : (isDark ? Colors.grey[300] : Colors.grey[700]),
+                      ),
+                    ),
+                  ),
+                  if (selected)
+                    Container(
+                      width: 6,
+                      height: 6,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: isDark ? const Color(0xFF00E5FF) : const Color(0xFF0F4C81),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTopBar() {
+    final isDark = widget.isDarkMode;
+    
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: _isMobile ? 12 : 24,
+        vertical: 14,
+      ),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface.withOpacity(0.98),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(isDark ? 0.3 : 0.06),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+        border: Border(
+          bottom: BorderSide(
+            color: isDark 
+              ? const Color(0xFF00E5FF).withOpacity(0.1)
+              : const Color(0xFF0F4C81).withOpacity(0.1),
+            width: 1,
+          ),
+        ),
+      ),
+      child: Row(
+        children: [
+          if (_isMobile)
+            IconButton(
+              icon: const Icon(Icons.menu),
+              onPressed: () => _scaffoldKey.currentState?.openDrawer(),
+            ),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  _pageTitle,
+                  style: GoogleFonts.inter(
+                    fontSize: _isMobile ? 16 : 20,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: -0.3,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                if (_isDesktop) ...[ // Show subtitle only on desktop
+                  const SizedBox(height: 4),
+                  Text(
+                    _pageSubtitle,
+                    style: GoogleFonts.inter(
+                      fontSize: 12,
+                      color: isDark ? Colors.grey[400] : Colors.grey[600],
+                      letterSpacing: 0.1,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ],
+            ),
+          ),
+          if (_isDesktop) ...[ // Show badge only on desktop
+            const SizedBox(width: 16),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.green.shade400.withOpacity(0.15),
+                    Colors.green.shade600.withOpacity(0.15),
+                  ],
+                ),
+                border: Border.all(
+                  color: Colors.greenAccent.withOpacity(0.3),
+                  width: 1,
+                ),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.flash_on, size: 14, color: Colors.greenAccent),
+                  const SizedBox(width: 6),
+                  Text(
+                    'GenAI Prototype · Mocked',
+                    style: GoogleFonts.inter(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.greenAccent,
+                      letterSpacing: 0.2,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+          const Spacer(),
+          IconButton(
+            tooltip: isDark ? 'Switch to light mode' : 'Switch to dark mode',
+            onPressed: widget.onToggleTheme,
+            icon: Icon(
+              isDark ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
+              size: 20,
+              color: Colors.amberAccent,
+            ),
+          ),
+          const SizedBox(width: 4),
+          IconButton(
+            tooltip: _botOpen ? 'Hide BOT Assist' : 'Show BOT Assist',
+            onPressed: () => setState(() => _botOpen = !_botOpen),
+            icon: Icon(
+              _botOpen ? Icons.chat_bubble : Icons.chat_bubble_outline,
+              size: 20,
+              color: const Color(0xFF00E5FF),
+            ),
+          ),
+          if (_isDesktop) ...[ // Show avatar only on desktop
+            const SizedBox(width: 12),
+            Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: isDark
+                    ? [const Color(0xFF0F4C81), const Color(0xFF0A1628)]
+                    : [const Color(0xFF0F4C81), const Color(0xFF1565C0)],
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFF0F4C81).withOpacity(0.3),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: CircleAvatar(
+                radius: 18,
+                backgroundColor: Colors.transparent,
+                child: Text(
+                  'IB',
+                  style: GoogleFonts.inter(
+                    fontSize: 13,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPageBody() {
+    switch (_currentPage) {
+      case InsightPage.overview:
+        return const _OverviewPage();
+      case InsightPage.clients:
+        return const _ClientsPage();
+      case InsightPage.opportunities:
+        return const _OpportunitiesPage();
+      case InsightPage.deals:
+        return const _MeetingsPage(); // TODO: Create dedicated _DealsPage
+      case InsightPage.acceleratedInsights:
+        return const _AcceleratedInsightsPage();
+      case InsightPage.triggers:
+        return const _TriggerEventsPage();
+      case InsightPage.walletOptimization:
+        return const _WalletOptimizationPage();
+      case InsightPage.dueDiligence:
+        return const _DueDiligencePage();
+      case InsightPage.segmentAnalytics:
+        return const SegmentDashboardSelector();
+      case InsightPage.compliance:
+        return const RegulatoryComplianceDashboard();
+      case InsightPage.roleBased:
+        return const RoleBasedViewSelector();
+      case InsightPage.contentGeneration:
+        return const _ContentGenerationPage();
+
+      case InsightPage.inboxInsights:
+        return const _InboxInsightsPage();
+      case InsightPage.settings:
+        return const _SettingsPage();
+    }
+  }
+
+  Widget _buildBotAssist() {
+    if (!_botOpen) {
+      return Positioned(
+        right: _isMobile ? 16 : 24,
+        bottom: _isMobile ? 16 : 24,
+        child: FloatingActionButton.extended(
+          onPressed: () {
+            if (_isMobile) {
+              showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                backgroundColor: Colors.transparent,
+                builder: (context) => DraggableScrollableSheet(
+                  initialChildSize: 0.7,
+                  minChildSize: 0.5,
+                  maxChildSize: 0.95,
+                  builder: (context, scrollController) => _BotAssistPanel(
+                    onClose: () => Navigator.pop(context),
+                    scrollController: scrollController,
+                  ),
+                ),
+              );
+            } else {
+              setState(() => _botOpen = true);
+            }
+          },
+          backgroundColor: const Color(0xFF0F4C81),
+          icon: const Icon(Icons.smart_toy_outlined),
+          label: const Text('BOT Assist'),
+        ),
+      );
+    }
+
+    if (_isMobile) {
+      return const SizedBox.shrink();
+    }
+
+    return Positioned(
+      right: 24,
+      bottom: 24,
+      top: 120,
+      child: _BotAssistPanel(onClose: () => setState(() => _botOpen = false)),
+    );
+  }
+}
+
+class _BotAssistPanel extends StatefulWidget {
+  final VoidCallback onClose;
+  final ScrollController? scrollController;
+
+  const _BotAssistPanel({
+    required this.onClose,
+    this.scrollController,
+  });
+
+  @override
+  State<_BotAssistPanel> createState() => _BotAssistPanelState();
+}
+
+class _BotAssistPanelState extends State<_BotAssistPanel> {
+  final List<_ChatMessage> _messages = [
+    const _ChatMessage(
+      role: ChatRole.bot,
+      text:
+          'Hi, I’m your InsightEngine BOT.\n\nAsk me things like:\n'
+          '• \"What are current EV/Revenue multiples for public SaaS peers?\"\n'
+          '• \"Show me the last 5 leveraged finance deals we did for this client.\"\n'
+          '• \"Summarise wallet opportunity across our priority corporates and sponsors.\"',
+    ),
+  ];
+  final TextEditingController _controller = TextEditingController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isMobile = MediaQuery.of(context).size.width < 768;
+    final isBottomSheet = widget.scrollController != null;
+    
+    return Container(
+      width: isBottomSheet ? double.infinity : 380,
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface.withOpacity(0.96),
+        borderRadius: isBottomSheet 
+          ? const BorderRadius.vertical(top: Radius.circular(20))
+          : BorderRadius.circular(16),
+        border: isBottomSheet ? null : Border.all(color: Colors.white12),
+        boxShadow: isBottomSheet ? null : const [
+          BoxShadow(
+            color: Colors.black54,
+            blurRadius: 18,
+            offset: Offset(0, 12),
+          ),
+        ],
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        children: [
+          if (isBottomSheet)
+            Container(
+              margin: const EdgeInsets.only(top: 8),
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Colors.grey[400],
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Theme.of(context).colorScheme.primary,
+                  Theme.of(context).colorScheme.primary.withOpacity(0.8),
+                ],
+              ),
+            ),
+            child: Row(
+              children: [
+                const Icon(Icons.smart_toy_outlined, color: Colors.white),
+                const SizedBox(width: 8),
+                const Expanded(
+                  child: Text(
+                    'InsightEngine BOT Assist',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 13,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                IconButton(
+                  onPressed: widget.onClose,
+                  icon: const Icon(Icons.close, size: 18, color: Colors.white),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              controller: widget.scrollController,
+              padding: const EdgeInsets.all(12),
+              itemCount: _messages.length,
+              itemBuilder: (context, index) {
+                final msg = _messages[index];
+                final isBot = msg.role == ChatRole.bot;
+                return Align(
+                  alignment:
+                      isBot ? Alignment.centerLeft : Alignment.centerRight,
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(vertical: 4),
+                    padding: const EdgeInsets.all(10),
+                    constraints: const BoxConstraints(maxWidth: 300),
+                    decoration: BoxDecoration(
+                      color: isBot
+                          ? const Color(0xFF0B1020)
+                          : const Color(0xFF0F4C81),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: msg.table != null
+                        ? Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if (msg.text.isNotEmpty)
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 8.0),
+                                  child: Text(
+                                    msg.text,
+                                    style: const TextStyle(fontSize: 12),
+                                  ),
+                                ),
+                              _MiniTable(table: msg.table!),
+                            ],
+                          )
+                        : Text(
+                            msg.text,
+                            style: const TextStyle(fontSize: 12),
+                          ),
+                  ),
+                );
+              },
+            ),
+          ),
+          Container(
+            padding:
+                const EdgeInsets.only(left: 8, right: 8, bottom: 10, top: 4),
+            decoration: const BoxDecoration(
+              border: Border(
+                top: BorderSide(color: Colors.white12),
+              ),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _controller,
+                    decoration: const InputDecoration(
+                      isDense: true,
+                      hintText: 'Ask about clients, deals, or valuation...',
+                      border: InputBorder.none,
+                    ),
+                    onSubmitted: (_) => _handleSend(),
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.send, size: 18),
+                  color: Colors.cyanAccent,
+                  onPressed: _handleSend,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _handleSend() {
+    final text = _controller.text.trim();
+    if (text.isEmpty) return;
+    setState(() {
+      _messages.add(_ChatMessage(role: ChatRole.user, text: text));
+    });
+    _controller.clear();
+    _simulateBotReply(text);
+  }
+
+  void _simulateBotReply(String query) {
+    final lower = query.toLowerCase();
+    _ChatMessage reply;
+
+    if (lower.contains('saas') && (lower.contains('multiple') || lower.contains('ev'))) {
+      reply = _ChatMessage(
+        role: ChatRole.bot,
+        text:
+            'Here is a mocked snapshot of public SaaS valuation for a typical investment bank coverage universe (last 2 quarters):',
+        table: const MiniTableData(
+          headers: ['Name', 'ARR (\$M)', 'EV/Rev (NTM)', 'EV/EBITDA (NTM)'],
+          rows: [
+            ['CloudPeak Software', '85', '7.8x', '24.1x'],
+            ['NovaMetrics SaaS', '62', '6.9x', '21.4x'],
+            ['Skyline Platforms', '130', '8.4x', '27.3x'],
+            ['SignalOps Cloud', '54', '6.2x', '19.8x'],
+          ],
+        ),
+      );
+    } else if (lower.contains('last 5 transactions') ||
+        (lower.contains('last five') && lower.contains('transactions'))) {
+      reply = _ChatMessage(
+        role: ChatRole.bot,
+        text:
+            'Mocked record of the last 5 M&A / financing transactions this platform has executed with this client:',
+        table: const MiniTableData(
+          headers: ['Client', 'Deal Type', 'Size (\$bn)', 'Close Date'],
+          rows: [
+            ['Atlas Manufacturing', 'Sell-side M&A', '2.4', '2025-09-18'],
+            ['BrightWave Energy', 'Refi + Term Loan B', '1.1', '2025-07-02'],
+            ['UrbanGrid REIT', 'Follow-on Equity', '0.8', '2025-04-26'],
+            ['SkyBridge Airlines', 'Convertible Notes', '1.6', '2025-02-10'],
+            ['Meridian Retail', 'Buy-side M&A', '3.2', '2024-12-03'],
+          ],
+        ),
+      );
+    } else if (lower.contains('wallet') || lower.contains('fee pool')) {
+      reply = const _ChatMessage(
+        role: ChatRole.bot,
+        text:
+            'Based on mocked internal wallet data, coverage has ~\$55–70M of annual fee whitespace\n'
+            'across Global Industrials, Mid-Cap Tech, and Sponsors. Biggest gaps are in structured solutions,\n'
+            'follow-on equity, and RX situations where competitors are more entrenched.',
+      );
+    } else {
+      reply = const _ChatMessage(
+        role: ChatRole.bot,
+        text:
+            'This is a mocked assistant – no live data or real client info.\n'
+            'I can still illustrate how InsightEngine would respond in a universal bank setting:\n'
+            '• Summarise a sector in 3–5 bullets\n'
+            '• Show comps tables and deal precedents\n'
+            '• Highlight wallet whitespace and outreach ideas',
+      );
+    }
+
+    Future.delayed(const Duration(milliseconds: 350), () {
+      if (!mounted) return;
+      setState(() {
+        _messages.add(reply);
+      });
+    });
+  }
+}
+
+enum ChatRole { user, bot }
+
+class _ChatMessage {
+  final ChatRole role;
+  final String text;
+  final MiniTableData? table;
+
+  const _ChatMessage({
+    required this.role,
+    required this.text,
+    this.table,
+  });
+}
+
+class MiniTableData {
+  final List<String> headers;
+  final List<List<String>> rows;
+
+  const MiniTableData({
+    required this.headers,
+    required this.rows,
+  });
+}
+
+class _MiniTable extends StatelessWidget {
+  final MiniTableData table;
+
+  const _MiniTable({required this.table});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: DataTable(
+            headingRowHeight: 26,
+            dataRowMinHeight: 26,
+            dataRowMaxHeight: 30,
+            columnSpacing: 12,
+            headingTextStyle: const TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.bold,
+            ),
+            dataTextStyle: const TextStyle(fontSize: 11),
+            columns: [
+              for (final h in table.headers) DataColumn(label: Text(h)),
+            ],
+            rows: [
+              for (final r in table.rows)
+                DataRow(
+                  cells: [
+                    for (final cell in r) DataCell(Text(cell)),
+                  ],
+                ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _OverviewPage extends StatelessWidget {
+  const _OverviewPage();
+
+  @override
+  Widget build(BuildContext context) {
+    final isMobile = MediaQuery.of(context).size.width < 768;
+    return Padding(
+      padding: EdgeInsets.all(isMobile ? 12 : 24),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final bool wide = constraints.maxWidth > 1100;
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const _WelcomeStrip(),
+              SizedBox(height: isMobile ? 12 : 16),
+              wide
+                  ? Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(child: _OverviewLeftColumn()),
+                        const SizedBox(width: 16),
+                        SizedBox(
+                          width: 360,
+                          child: _OverviewRightColumn(),
+                        ),
+                      ],
+                    )
+                  : Column(
+                      children: const [
+                        _OverviewLeftColumn(),
+                        SizedBox(height: 16),
+                        _OverviewRightColumn(),
+                      ],
+                    ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _OverviewLeftColumn extends StatelessWidget {
+  const _OverviewLeftColumn();
+
+  @override
+  Widget build(BuildContext context) {
+    final isMobile = MediaQuery.of(context).size.width < 768;
+    
+    return Column(
+      children: [
+        if (isMobile)
+          Column(
+            children: const [
+              _KpiCard(
+                label: 'Opportunities flagged (24h)',
+                value: '18',
+                delta: '+220%',
+                deltaLabel: 'vs manual baseline',
+              ),
+              SizedBox(height: 12),
+              _KpiCard(
+                label: 'Hours saved today',
+                value: '7.5',
+                delta: '-63%',
+                deltaLabel: 'non-client work',
+              ),
+              SizedBox(height: 12),
+              _KpiCard(
+                label: 'Client touchpoints auto-prepped',
+                value: '12',
+                delta: 'Under 90s',
+                deltaLabel: 'per briefing',
+              ),
+            ],
+          )
+        else
+          Row(
+            children: const [
+              Expanded(
+                child: _KpiCard(
+                  label: 'Opportunities flagged (24h)',
+                  value: '18',
+                  delta: '+220%',
+                  deltaLabel: 'vs manual baseline',
+                ),
+              ),
+              SizedBox(width: 12),
+              Expanded(
+                child: _KpiCard(
+                  label: 'Hours saved today',
+                  value: '7.5',
+                  delta: '-63%',
+                  deltaLabel: 'non-client work',
+                ),
+              ),
+              SizedBox(width: 12),
+              Expanded(
+                child: _KpiCard(
+                  label: 'Client touchpoints auto-prepped',
+                  value: '12',
+                  delta: 'Under 90s',
+                  deltaLabel: 'per briefing',
+                ),
+              ),
+            ],
+          ),
+        const SizedBox(height: 16),
+        const _MockTimelineCard(),
+        const SizedBox(height: 16),
+        const NextBestActionsCard(),
+      ],
+    );
+  }
+}
+
+class _OverviewRightColumn extends StatelessWidget {
+  const _OverviewRightColumn();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: const [
+        _WelcomeUpdatesCard(),
+        SizedBox(height: 12),
+        MarketAlertsCard(),
+        SizedBox(height: 12),
+        _VerticalCard(
+          title: 'Live Trigger Feed (Mocked)',
+          subtitle:
+              'Simulated M&A / earnings / regulatory triggers InsightEngine is watching.',
+          items: [
+            'Earnings surprise: NorthPeak SaaS beats revenue by +9.4% vs consensus.',
+            'Reg filing: Horizon Logistics files 8-K announcing strategic review.',
+            'Sector shift: 2-year yields spike 35 bps; LBO financing spreads widening.',
+          ],
+        ),
+        SizedBox(height: 12),
+        _VerticalCard(
+          title: 'Top Clients with Untapped Wallet (Mocked)',
+          subtitle:
+              'Wallet & capital optimization engine spotting whitespace vs benchmarks.',
+          items: [
+            'Client A (Global Industrials): \$45–60M fee pool at risk to peers.',
+            'Client B (Mid-cap SaaS): Under-levered vs sector; recap opportunity.',
+            'Client C (Consumer): Portfolio divestiture potential in Non-Core EU assets.',
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _KpiCard extends StatelessWidget {
+  final String label;
+  final String value;
+  final String delta;
+  final String deltaLabel;
+
+  const _KpiCard({
+    required this.label,
+    required this.value,
+    required this.delta,
+    required this.deltaLabel,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isPositive = !delta.startsWith('-');
+    
+    return Card(
+      elevation: 6,
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: isDark
+              ? [
+                  const Color(0xFF0B1020),
+                  const Color(0xFF0F1A2E),
+                ]
+              : [
+                  Colors.white,
+                  const Color(0xFFF8F9FB),
+                ],
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      label,
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                        color: isDark ? Colors.grey[400] : Colors.grey[600],
+                        letterSpacing: 0.3,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: LinearGradient(
+                        colors: isPositive
+                          ? [Colors.green.shade400, Colors.green.shade600]
+                          : [Colors.red.shade400, Colors.red.shade600],
+                      ),
+                    ),
+                    child: Icon(
+                      isPositive ? Icons.trending_up : Icons.trending_down,
+                      size: 14,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Text(
+                value,
+                style: GoogleFonts.inter(
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: -0.5,
+                  height: 1.0,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                decoration: BoxDecoration(
+                  color: isPositive
+                    ? Colors.green.withOpacity(0.12)
+                    : Colors.red.withOpacity(0.12),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      delta,
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: isPositive ? Colors.green : Colors.red,
+                        letterSpacing: 0.2,
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      deltaLabel,
+                      style: GoogleFonts.inter(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w500,
+                        color: isDark ? Colors.grey[400] : Colors.grey[600],
+                        letterSpacing: 0.2,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _MockTimelineCard extends StatelessWidget {
+  const _MockTimelineCard();
+
+  @override
+  Widget build(BuildContext context) {
+    final events = [
+      '09:02 · InsightEngine generated SaaS sector snapshot for Client B (under 15s).',
+      '09:17 · Trigger: Horizon Logistics strategic review · 1-page banker briefing ready.',
+      '10:04 · Wallet scan: Client A – 2 untapped structured finance ideas identified.',
+      '11:23 · Fact-check: 3 inconsistencies flagged in Draft Pitch v4 for Client C.',
+    ];
+    return Card(
+      elevation: 3,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'How InsightEngine has worked for you in the last 3 hours (Mocked)',
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: 12),
+            ...events.map(
+              (e) => Padding(
+                padding: const EdgeInsets.symmetric(vertical: 6),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: 8,
+                      height: 8,
+                      margin: const EdgeInsets.only(top: 4),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.cyanAccent,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        e,
+                        style: const TextStyle(fontSize: 12),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _VerticalCard extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final List<String> items;
+
+  const _VerticalCard({
+    required this.title,
+    required this.subtitle,
+    required this.items,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 3,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              subtitle,
+              style: const TextStyle(fontSize: 11, color: Colors.grey),
+            ),
+            const SizedBox(height: 12),
+            ...items.map(
+              (i) => Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Icon(Icons.circle, size: 6, color: Colors.cyanAccent),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        i,
+                        style: const TextStyle(fontSize: 12),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ClientsPage extends StatefulWidget {
+  const _ClientsPage();
+
+  @override
+  State<_ClientsPage> createState() => _ClientsPageState();
+}
+
+class _ClientsPageState extends State<_ClientsPage> {
+  final TextEditingController _searchController = TextEditingController();
+  String _segmentFilter = 'All';
+  String? _selectedClientId;
+
+  List<ClientData> get _filteredClients {
+    return MockBankingData.enhancedClients.where((c) {
+      final q = _searchController.text.toLowerCase();
+      final matchesQuery =
+          q.isEmpty || c.name.toLowerCase().contains(q);
+      
+      String segmentString;
+      switch (c.segment) {
+        case ClientSegment.privateBanking:
+          segmentString = 'Private';
+          break;
+        case ClientSegment.corporateBanking:
+          segmentString = 'Corporate';
+          break;
+        case ClientSegment.institutional:
+          segmentString = 'Institutional';
+          break;
+        case ClientSegment.investmentBanking:
+          segmentString = 'Investment Banking';
+          break;
+      }
+      
+      final matchesSegment =
+          _segmentFilter == 'All' || segmentString == _segmentFilter;
+      return matchesQuery && matchesSegment;
+    }).toList();
+  }
+
+  ClientData? get _selectedClient {
+    if (_selectedClientId == null) return null;
+    try {
+      return MockBankingData.enhancedClients.firstWhere(
+        (c) => c.id == _selectedClientId
+      );
+    } catch (e) {
+      return null;
+    }
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final filtered = _filteredClients;
+
+    final isMobile = MediaQuery.of(context).size.width < 768;
+    return Padding(
+      padding: EdgeInsets.all(isMobile ? 12 : 24),
+      child: isMobile
+          ? Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Text(
+                          'Client Search',
+                          style:
+                              TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                        ),
+                        const SizedBox(height: 8),
+                        TextField(
+                          controller: _searchController,
+                          decoration: const InputDecoration(
+                            hintText: 'Search by client name...',
+                            prefixIcon: Icon(Icons.search),
+                          ),
+                          onChanged: (_) => setState(() {}),
+                        ),
+                        const SizedBox(height: 8),
+                        Row(
+                          children: [
+                            const Text(
+                              'Segment:',
+                              style:
+                                  TextStyle(fontSize: 11, color: Colors.grey),
+                            ),
+                            const SizedBox(width: 8),
+                            DropdownButton<String>(
+                              value: _segmentFilter,
+                              items: const [
+                                DropdownMenuItem(
+                                  value: 'All',
+                                  child: Text('All'),
+                                ),
+                                DropdownMenuItem(
+                                  value: 'Private',
+                                  child: Text('Private Bank'),
+                                ),
+                                DropdownMenuItem(
+                                  value: 'Corporate',
+                                  child: Text('Corporate Bank'),
+                                ),
+                                DropdownMenuItem(
+                                  value: 'Institutional',
+                                  child: Text('Institutional'),
+                                ),
+                                DropdownMenuItem(
+                                  value: 'Investment Banking',
+                                  child: Text('Investment Banking'),
+                                ),
+                              ],
+                              onChanged: (v) =>
+                                  setState(() => _segmentFilter = v ?? 'All'),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        SizedBox(
+                          height: 200,
+                          child: ListView.builder(
+                            itemCount: filtered.length,
+                            itemBuilder: (context, index) {
+                              final client = filtered[index];
+                              final selected = client.id == _selectedClientId;
+                              return InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    _selectedClientId = client.id;
+                                  });
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: selected
+                                        ? Theme.of(context)
+                                            .colorScheme
+                                            .primary
+                                            .withOpacity(0.1)
+                                        : Colors.transparent,
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: ListTile(
+                                    dense: true,
+                                    selected: selected,
+                                    selectedTileColor: Colors.transparent,
+                                    title: Text(
+                                      client.name,
+                                      style: TextStyle(
+                                        fontWeight: selected
+                                            ? FontWeight.w600
+                                            : FontWeight.normal,
+                                      ),
+                                    ),
+                                    subtitle: Text(
+                                      '${client.segment.name} · ${client.tier} · RM: ${client.relationshipManager}',
+                                      style: const TextStyle(
+                                          fontSize: 11, color: Colors.grey),
+                                    ),
+                                    trailing: selected
+                                        ? const Icon(
+                                            Icons.check_circle,
+                                            size: 20,
+                                            color: Colors.cyanAccent,
+                                          )
+                                        : null,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                _selectedClient == null
+                    ? const Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(16),
+                          child: Text(
+                            'Select a client above to view a mocked 360° profile and GenAI summary.',
+                            style: TextStyle(fontSize: 12, color: Colors.grey),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      )
+                    : _EnhancedClientDetailPanel(client: _selectedClient!),
+              ],
+            )
+          : LayoutBuilder(
+              builder: (context, constraints) {
+                return Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: constraints.maxWidth * 0.4,
+                      child: Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Client Search',
+                                style:
+                                    TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                              ),
+                              const SizedBox(height: 8),
+                              TextField(
+                                controller: _searchController,
+                                decoration: const InputDecoration(
+                                  hintText: 'Search by client name...',
+                                  prefixIcon: Icon(Icons.search),
+                                ),
+                                onChanged: (_) => setState(() {}),
+                              ),
+                              const SizedBox(height: 8),
+                              Row(
+                                children: [
+                                  const Text(
+                                    'Segment:',
+                                    style:
+                                        TextStyle(fontSize: 11, color: Colors.grey),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  DropdownButton<String>(
+                                    value: _segmentFilter,
+                                    items: const [
+                                      DropdownMenuItem(
+                                        value: 'All',
+                                        child: Text('All'),
+                                      ),
+                                      DropdownMenuItem(
+                                        value: 'Private',
+                                        child: Text('Private Bank'),
+                                      ),
+                                      DropdownMenuItem(
+                                        value: 'Corporate',
+                                        child: Text('Corporate Bank'),
+                                      ),
+                                    ],
+                                    onChanged: (v) =>
+                                        setState(() => _segmentFilter = v ?? 'All'),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 12),
+                              SizedBox(
+                                height: 400,
+                                child: ListView.builder(
+                                  itemCount: filtered.length,
+                                  itemBuilder: (context, index) {
+                                    final client = filtered[index];
+                                    final selected = client.id == _selectedClientId;
+                                    return InkWell(
+                                      onTap: () {
+                                        setState(() {
+                                          _selectedClientId = client.id;
+                                        });
+                                      },
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: selected
+                                              ? Theme.of(context)
+                                                  .colorScheme
+                                                  .primary
+                                                  .withOpacity(0.1)
+                                              : Colors.transparent,
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                        child: ListTile(
+                                          dense: true,
+                                          selected: selected,
+                                          selectedTileColor: Colors.transparent,
+                                          title: Text(
+                                            client.name,
+                                            style: TextStyle(
+                                              fontWeight: selected
+                                                  ? FontWeight.w600
+                                                  : FontWeight.normal,
+                                            ),
+                                          ),
+                                          subtitle: Text(
+                                            '${client.segment.name} · ${client.tier} · RM: ${client.relationshipManager}',
+                                            style: const TextStyle(
+                                                fontSize: 11, color: Colors.grey),
+                                          ),
+                                          trailing: selected
+                                              ? const Icon(
+                                                  Icons.check_circle,
+                                                  size: 20,
+                                                  color: Colors.cyanAccent,
+                                                )
+                                              : null,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: _selectedClient == null
+                          ? const Center(
+                              child: Text(
+                                'Select a client on the left to view a mocked 360° profile and GenAI summary.',
+                                style: TextStyle(fontSize: 12, color: Colors.grey),
+                                textAlign: TextAlign.center,
+                              ),
+                            )
+                          : _EnhancedClientDetailPanel(client: _selectedClient!),
+                    ),
+                  ],
+                );
+              },
+            ),
+    );
+  }
+}
+
+// Enhanced Client Detail Panel with Segment-Specific Data
+class _EnhancedClientDetailPanel extends StatelessWidget {
+  final ClientData client;
+
+  const _EnhancedClientDetailPanel({required this.client});
+
+  String _formatCurrency(double amount) {
+    if (amount >= 1000) {
+      return '\$${(amount / 1000).toStringAsFixed(1)}bn';
+    } else {
+      return '\$${amount.toStringAsFixed(0)}m';
+    }
+  }
+
+  String _getSegmentDisplayName(ClientSegment segment) {
+    switch (segment) {
+      case ClientSegment.privateBanking:
+        return 'Private Banking';
+      case ClientSegment.corporateBanking:
+        return 'Corporate Banking';
+      case ClientSegment.institutional:
+        return 'Institutional';
+      case ClientSegment.investmentBanking:
+        return 'Investment Banking';
+    }
+  }
+
+  String _getComplianceStatusText(ComplianceStatus status) {
+    switch (status) {
+      case ComplianceStatus.approved:
+        return 'Approved';
+      case ComplianceStatus.pending:
+        return 'Pending';
+      case ComplianceStatus.inReview:
+        return 'In Review';
+      case ComplianceStatus.expired:
+        return 'Expired';
+      case ComplianceStatus.requiresUpdate:
+        return 'Requires Update';
+    }
+  }
+
+  Color _getComplianceStatusColor(ComplianceStatus status) {
+    switch (status) {
+      case ComplianceStatus.approved:
+        return Colors.green;
+      case ComplianceStatus.pending:
+      case ComplianceStatus.inReview:
+        return Colors.orange;
+      case ComplianceStatus.expired:
+      case ComplianceStatus.requiresUpdate:
+        return Colors.red;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isMobile = MediaQuery.of(context).size.width < 768;
+
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Header Card
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 28,
+                        backgroundColor: Theme.of(context).colorScheme.primary,
+                        child: Text(
+                          client.name.substring(0, 1).toUpperCase(),
+                          style: const TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              client.name,
+                              style: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              '${_getSegmentDisplayName(client.segment)} · ${client.tier}',
+                              style: const TextStyle(
+                                fontSize: 13,
+                                color: Colors.grey,
+                              ),
+                            ),
+                            Text(
+                              'RM: ${client.relationshipManager} | ${client.jurisdiction}',
+                              style: const TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+
+          // Compliance & Risk Card
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Compliance & Risk Profile',
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _StatusBadge(
+                          label: 'KYC Status',
+                          value: _getComplianceStatusText(client.kycStatus),
+                          color: _getComplianceStatusColor (client.kycStatus),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: _StatusBadge(
+                          label: 'Risk Rating',
+                          value: client.riskRating.name.toUpperCase(),
+                          color: client.riskRating == RiskRating.low ? Colors.green :
+                                 client.riskRating == RiskRating.medium ? Colors.orange :
+                                 Colors.red,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+
+          // Segment-Specific Data
+          if (client.privateBankingData != null)
+            _PrivateBankingSection(data: client.privateBankingData!),
+          if (client.corporateBankingData != null)
+            _CorporateBankingSection(data: client.corporateBankingData!),
+          if (client.institutionalBankingData != null)
+            _InstitutionalBankingSection(data: client.institutionalBankingData!),
+          if (client.investmentBankingData != null)
+            _InvestmentBankingSection(data: client.investmentBankingData!),
+          
+          const SizedBox(height: 16),
+
+          // Wallet & Revenue Card
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Wallet & Revenue (12M)',
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _MetricCard(
+                          label: 'Total Revenue',
+                          value: _formatCurrency(client.totalRevenue),
+                          icon: Icons.attach_money,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: _MetricCard(
+                          label: 'Product Count',
+                          value: '${client.walletByProduct.length}',
+                          icon: Icons.shopping_bag_outlined,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  const Divider(),
+                  const SizedBox(height: 12),
+                  const Text(
+                    'Revenue by Product',
+                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+                  ),
+                  const SizedBox(height: 8),
+                  ...client.walletByProduct.entries.map((entry) => 
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              entry.key.name,
+                              style: const TextStyle(fontSize: 12),
+                            ),
+                          ),
+                          Text(
+                            _formatCurrency(entry.value),
+                            style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ).toList(),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+
+          // Decision Makers Card
+          if (client.decisionMakers.isNotEmpty)
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Key Decision Makers',
+                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                    ),
+                    const SizedBox(height: 12),
+                    ...client.decisionMakers.map((dm) => 
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.person_outline, size: 16, color: Colors.cyan),
+                            const SizedBox(width: 8),
+                            Text(dm, style: const TextStyle(fontSize: 12)),
+                          ],
+                        ),
+                      ),
+                    ).toList(),
+                  ],
+                ),
+              ),
+            ),
+          const SizedBox(height: 16),
+
+          // Opportunities
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      const Icon(Icons.auto_awesome, size: 18, color: Colors.cyanAccent),
+                      const SizedBox(width: 8),
+                      const Text(
+                        'GenAI Identified Opportunities',
+                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  ...MockBankingData.enhancedOpportunities
+                      .where((opp) => opp.clientId == client.id)
+                      .map((opp) => Padding(
+                        padding: const EdgeInsets.only(bottom: 12),
+                        child: Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.surface.withOpacity(0.5),
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color: Colors.cyanAccent.withOpacity(0.3),
+                            ),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      opp.title,
+                                      style: const TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ),
+                                  Text(
+                                    _formatCurrency(opp.estimatedRevenue),
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.green,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 6),
+                              Text(
+                                opp.description,
+                                style: const TextStyle(fontSize: 12, color: Colors.grey),
+                              ),
+                              const SizedBox(height: 8),
+                              Row(
+                                children: [
+                                  Container(
+                                    padding:  const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                    decoration: BoxDecoration(
+                                      color: Colors.blue.withOpacity(0.2),
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: Text(
+                                      opp.stage,
+                                      style: const TextStyle(fontSize: 10),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    '${(opp.probability * 100).toInt()}% probability',
+                                    style: const TextStyle(fontSize: 11, color: Colors.grey),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      )).toList(),
+                  if (MockBankingData.enhancedOpportunities
+                        .where((opp) => opp.clientId == client.id)
+                        .isEmpty)
+                    const Text(
+                      'No active opportunities identified.',
+                      style: TextStyle(fontSize: 12, color: Colors.grey),
+                    ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+
+          // Action Buttons
+          Row(
+            children: [
+              Expanded(
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          'Mocked: generating comprehensive brief for ${client.name}'),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.description_outlined, size: 18),
+                  label: const Text('Generate Brief'),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          'Mocked: scheduling meeting with ${client.name}'),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.event_outlined, size: 18),
+                  label: const Text('Schedule Meeting'),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// Private Banking specific section
+class _PrivateBankingSection extends StatelessWidget {
+  final PrivateBankingData data;
+
+  const _PrivateBankingSection({required this.data});
+
+  String _formatCurrency(double amount) {
+    if (amount >= 1000) {
+      return '\$${(amount / 1000).toStringAsFixed(1)}bn';
+    } else {
+      return '\$${amount.toStringAsFixed(0)}m';
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Row(
+              children: [
+                Icon(Icons.account_balance_wallet, size: 18, color: Colors.purple),
+                SizedBox(width: 8),
+                Text(
+                  'Private Banking Details',
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Expanded(
+                  child: _MetricCard(
+                    label: 'Net Worth',
+                    value: _formatCurrency(data.netWorth),
+                    icon: Icons.trending_up,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: _MetricCard(
+                    label: 'AUM',
+                    value: _formatCurrency(data.aum),
+                    icon: Icons.pie_chart,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            const Divider(),
+            const SizedBox(height: 12),
+            _InfoRow(label: 'Family Structure', value: data.familyStructure),
+            _InfoRow(label: 'Investment Objective', value: data.investmentObjective),
+            _InfoRow(label: 'Tax Jurisdiction', value: data.taxJurisdiction),
+            _InfoRow(label: 'Generation Focus', value: data.generationFocus),
+            _InfoRow(
+              label: 'Estate Planning',
+              value: data.estatePlanningActive ? 'Active' : 'Inactive',
+            ),
+            if (data.trustEntities.isNotEmpty) ...[
+              const SizedBox(height: 8),
+              const Text(
+                'Trust Entities:',
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 4),
+              ...data.trustEntities.map((t) => Padding(
+                padding: const EdgeInsets.only(left: 12, top: 4),
+                child: Text('• $t', style: const TextStyle(fontSize: 11)),
+              )).toList(),
+            ],
+            if (data.assetAllocation.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              const Text(
+                'Asset Allocation:',
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 8),
+              ...data.assetAllocation.entries.map((entry) => 
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 4),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          entry.key,
+                          style: const TextStyle(fontSize: 11),
+                        ),
+                      ),
+                      Text(
+                        '${entry.value.toStringAsFixed(1)}%',
+                        style: const TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ).toList(),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// Corporate Banking specific section
+class _CorporateBankingSection extends StatelessWidget {
+  final CorporateBankingData data;
+
+  const _CorporateBankingSection({required this.data});
+
+  String _formatCurrency(double amount) {
+    if (amount >= 1000) {
+      return '\$${(amount / 1000).toStringAsFixed(1)}bn';
+    } else {
+      return '\$${amount.toStringAsFixed(0)}m';
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Row(
+              children: [
+                Icon(Icons.business, size: 18, color: Colors.blue),
+                SizedBox(width: 8),
+                Text(
+                  'Corporate Banking Details',
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Expanded(
+                  child: _MetricCard(
+                    label: 'Annual Revenue',
+                    value: _formatCurrency(data.annualRevenue),
+                    icon: Icons.receipt_long,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: _MetricCard(
+                    label: 'EBITDA',
+                    value: _formatCurrency(data.ebitda),
+                    icon: Icons.show_chart,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            const Divider(),
+            const SizedBox(height: 12),
+            _InfoRow(label: 'Industry Sector', value: data.industrySector),
+            _InfoRow(label: 'Employee Count', value: data.employeeCount.toString()),
+            _InfoRow(label: 'Credit Rating', value: data.creditRating),
+            _InfoRow(label: 'Cash Balance', value: _formatCurrency(data.cashBalance)),
+            _InfoRow(label: 'Treasury Complexity', value: data.treasuryComplexity),
+            if (data.productUtilization.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              const Text(
+                'Product Utilization:',
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 8),
+              ...data.productUtilization.entries.map((entry) => 
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 4),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          entry.key,
+                          style: const TextStyle(fontSize: 11),
+                        ),
+                      ),
+                      Text(
+                        _formatCurrency(entry.value),
+                        style: const TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ).toList(),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// Institutional Banking specific section
+class _InstitutionalBankingSection extends StatelessWidget {
+  final InstitutionalBankingData data;
+
+  const _InstitutionalBankingSection({required this.data});
+
+  String _formatCurrency(double amount) {
+    if (amount >= 1000) {
+      return '\$${(amount / 1000).toStringAsFixed(1)}bn';
+    } else {
+      return '\$${amount.toStringAsFixed(0)}m';
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Row(
+              children: [
+                Icon(Icons.domain, size: 18, color: Colors.teal),
+                SizedBox(width: 8),
+                Text(
+                  'Institutional Details',
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Expanded(
+                  child: _MetricCard(
+                    label: 'AUM',
+                    value: _formatCurrency(data.aum),
+                    icon: Icons.account_balance,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: _MetricCard(
+                    label: 'Custody Volume',
+                    value: _formatCurrency(data.custodyVolume),
+                    icon: Icons.lock_outline,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            const Divider(),
+            const SizedBox(height: 12),
+            _InfoRow(label: 'Institution Type', value: data.institutionType),
+            _InfoRow(label: 'Investment Mandate', value: data.investmentMandate),
+            _InfoRow(label: 'Benchmark', value: data.benchmark),
+            _InfoRow(label: 'Investment Horizon', value: data.investmentHorizon),
+            _InfoRow(label: 'Regulatory Framework', value: data.regulatoryFramework),
+            _InfoRow(label: 'ESG Focused', value: data.esgFocused ? 'Yes' : 'No'),
+            if (data.assetAllocation.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              const Text(
+                'Asset Allocation:',
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 8),
+              ...data.assetAllocation.entries.map((entry) => 
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 4),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          entry.key,
+                          style: const TextStyle(fontSize: 11),
+                        ),
+                      ),
+                      Text(
+                        '${entry.value.toStringAsFixed(1)}%',
+                        style: const TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ).toList(),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// Investment Banking specific section
+class _InvestmentBankingSection extends StatelessWidget {
+  final InvestmentBankingData data;
+
+  const _InvestmentBankingSection({required this.data});
+
+  String _formatCurrency(double amount) {
+    if (amount >= 1000) {
+      return '\$${(amount / 1000).toStringAsFixed(1)}bn';
+    } else {
+      return '\$${amount.toStringAsFixed(0)}m';
+    }
+  }
+
+  String _getDealTypeLabel(DealType type) {
+    switch (type) {
+      case DealType.maAdvisory:
+        return 'M&A Advisory';
+      case DealType.ecm:
+        return 'ECM';
+      case DealType.dcm:
+        return 'DCM';
+      case DealType.leveragedFinance:
+        return 'Leveraged Finance';
+      case DealType.restructuring:
+        return 'Restructuring';
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Row(
+              children: [
+                Icon(Icons.account_balance, size: 18, color: Colors.amber),
+                SizedBox(width: 8),
+                Text(
+                  'Investment Banking Details',
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            
+            // Company Type & Market Info
+            _InfoRow(label: 'Company Type', value: data.companyType),
+            if (data.marketCap != null)
+              _InfoRow(label: 'Market Cap', value: _formatCurrency(data.marketCap!)),
+            if (data.ticker != null)
+              _InfoRow(label: 'Ticker', value: data.ticker!),
+            if (data.sponsor != null)
+              _InfoRow(label: 'Sponsor', value: data.sponsor!),
+            _InfoRow(label: 'Sectors', value: data.sectors.join(', ')),
+            if (data.strategicPriority != null)
+              _InfoRow(label: 'Strategic Priority', value: data.strategicPriority!),
+            _InfoRow(label: 'Active Mandate', value: data.activeMandate ? 'Yes' : 'No'),
+            
+            const SizedBox(height: 12),
+            const Divider(),
+            const SizedBox(height: 12),
+            
+            // Board Members
+            if (data.boardMembers.isNotEmpty) ...[
+              const Text(
+                'Board Members:',
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 8),
+              ...data.boardMembers.map((member) => 
+                Padding(
+                  padding: const EdgeInsets.only(left: 12, bottom: 4),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.person, size: 14, color: Colors.grey),
+                      const SizedBox(width: 8),
+                      Text(member, style: const TextStyle(fontSize: 11)),
+                    ],
+                  ),
+                ),
+              ).toList(),
+              const SizedBox(height: 12),
+            ],
+            
+            // Transaction History
+            if (data.transactionHistory.isNotEmpty) ...[
+              const Text(
+                'Past Transactions:',
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 8),
+              ...data.transactionHistory.map((txn) => 
+                Container(
+                  margin: const EdgeInsets.only(bottom: 8),
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surface.withOpacity(0.3),
+                    borderRadius: BorderRadius.circular(6),
+                    border: Border.all(color: Colors.amber.withOpacity(0.3)),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              txn.transactionName,
+                              style: const TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: Colors.amber.withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Text(
+                              _getDealTypeLabel(txn.type),
+                              style: const TextStyle(fontSize: 10),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 6),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Deal Value: ${_formatCurrency(txn.value)}',
+                                  style: const TextStyle(fontSize: 11),
+                                ),
+                                Text(
+                                  'Fee: ${_formatCurrency(txn.fee)}',
+                                  style: const TextStyle(fontSize: 11, color: Colors.green),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                txn.role,
+                                style: const TextStyle(fontSize: 10, fontStyle: FontStyle.italic),
+                              ),
+                              Text(
+                                '${txn.closeDate.month}/${txn.closeDate.year}',
+                                style: const TextStyle(fontSize: 10, color: Colors.grey),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ).toList(),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// Helper widget for info rows
+class _InfoRow extends StatelessWidget {
+  final String label;
+  final String value;
+
+  const _InfoRow({required this.label, required this.value});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 140,
+            child: Text(
+              '$label:',
+              style: const TextStyle(
+                fontSize: 12,
+                color: Colors.grey,
+              ),
+            ),
+          ),
+          Expanded(
+            child: Text(
+              value,
+              style: const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _MetricCard extends StatelessWidget {
+  final String label;
+  final String value;
+  final IconData icon;
+
+  const _MetricCard({
+    required this.label,
+    required this.value,
+    required this.icon,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface.withOpacity(0.5),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, size: 20, color: Colors.cyanAccent),
+          const SizedBox(height: 8),
+          Text(
+            value,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            style: const TextStyle(
+              fontSize: 11,
+              color: Colors.grey,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ActivityItem extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final String date;
+
+  const _ActivityItem({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.date,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(icon, size: 20, color: Theme.of(context).colorScheme.primary),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                subtitle,
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey,
+                ),
+              ),
+            ],
+          ),
+        ),
+        Text(
+          date,
+          style: const TextStyle(
+            fontSize: 11,
+            color: Colors.grey,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _OpportunityItem extends StatelessWidget {
+  final String number;
+  final String text;
+
+  const _OpportunityItem({
+    required this.number,
+    required this.text,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 24,
+            height: 24,
+            decoration: BoxDecoration(
+              color: Colors.cyanAccent.withOpacity(0.2),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Center(
+              child: Text(
+                number,
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.cyanAccent,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              text,
+              style: const TextStyle(fontSize: 12),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _StatusBadge extends StatelessWidget {
+  final String label;
+  final String value;
+  final Color color;
+
+  const _StatusBadge({
+    required this.label,
+    required this.value,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: color.withOpacity(0.3)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: const TextStyle(
+              fontSize: 11,
+              color: Colors.grey,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: color,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _WelcomeStrip extends StatelessWidget {
+  const _WelcomeStrip();
+
+  @override
+  Widget build(BuildContext context) {
+    final isMobile = MediaQuery.of(context).size.width < 768;
+    
+    if (isMobile) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Welcome back, Banker',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Here is your at-a-glance view of today: key updates, triggers, and opportunities ready to action.',
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.grey[400],
+            ),
+          ),
+          const SizedBox(height: 12),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            decoration: BoxDecoration(
+              color: Colors.white10,
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: Colors.white12),
+            ),
+            child: const Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.task_alt, size: 14, color: Colors.cyanAccent),
+                SizedBox(width: 6),
+                Text(
+                  'Today: 3 high-priority follow-ups',
+                  style: TextStyle(fontSize: 11),
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+    }
+    
+    return Row(
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Welcome back, Banker',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                'Here is your at-a-glance view of today: key updates, triggers, and opportunities ready to action.',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey[400],
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(width: 16),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+          decoration: BoxDecoration(
+            color: Colors.white10,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: Colors.white12),
+          ),
+          child: const Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.task_alt, size: 14, color: Colors.cyanAccent),
+              SizedBox(width: 6),
+              Text(
+                'Today: 3 high-priority follow-ups',
+                style: TextStyle(fontSize: 11),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _WelcomeUpdatesCard extends StatelessWidget {
+  const _WelcomeUpdatesCard();
+
+  @override
+  Widget build(BuildContext context) {
+    final items = [
+      'Prepare SaaS sector summary for Client B briefing at 11:00.',
+      'Review 3 fact-check flags on Draft Pitch v4 before sending to client.',
+      'Follow up on two wallet opportunities flagged in Industrials and Tech.',
+    ];
+
+    return Card(
+      elevation: 3,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Today’s To‑Dos & Key Updates (Mocked)',
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: 4),
+            const Text(
+              'A quick list of what InsightEngine thinks should be top of your agenda.',
+              style: TextStyle(fontSize: 11, color: Colors.grey),
+            ),
+            const SizedBox(height: 10),
+            ...items.map(
+              (i) => Padding(
+                padding: const EdgeInsets.symmetric(vertical: 3),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Icon(Icons.check_circle_outline,
+                        size: 14, color: Colors.cyanAccent),
+                    const SizedBox(width: 6),
+                    Expanded(
+                      child: Text(
+                        i,
+                        style: const TextStyle(fontSize: 12),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _AcceleratedInsightsPage extends StatelessWidget {
+  const _AcceleratedInsightsPage();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isMobile = MediaQuery.of(context).size.width < 768;
+    return Padding(
+      padding: EdgeInsets.all(isMobile ? 12 : 24),
+      child: isMobile
+          ? Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Card(
+                  elevation: 3,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Text(
+                          'Accelerated Insight Delivery',
+                          style:
+                              TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          'Mock how a banker at a large financial institution could compress a 3–4 hour analysis into seconds.',
+                          style:
+                              theme.textTheme.bodySmall?.copyWith(color: Colors.grey),
+                        ),
+                        const SizedBox(height: 16),
+                        Wrap(
+                          spacing: 12,
+                          runSpacing: 12,
+                          children: const [
+                            _ChipBadge(label: 'Sector: SaaS / Cloud'),
+                            _ChipBadge(label: 'Coverage: Global Industrials'),
+                            _ChipBadge(label: 'Target: Mid-cap ARR \$50–100M'),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        const _InsightInputForm(),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                const _InsightExecutiveSummary(),
+              ],
+            )
+          : LayoutBuilder(
+              builder: (context, constraints) {
+                return Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: constraints.maxWidth * 0.4,
+                      child: Card(
+                        elevation: 3,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Text(
+                                'Accelerated Insight Delivery',
+                                style:
+                                    TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                              ),
+                              const SizedBox(height: 6),
+                              Text(
+                                'Mock how a banker at a large financial institution could compress a 3–4 hour analysis into seconds.',
+                                style:
+                                    theme.textTheme.bodySmall?.copyWith(color: Colors.grey),
+                              ),
+                              const SizedBox(height: 16),
+                              Wrap(
+                                spacing: 12,
+                                runSpacing: 12,
+                                children: const [
+                                  _ChipBadge(label: 'Sector: SaaS / Cloud'),
+                                  _ChipBadge(label: 'Coverage: Global Industrials'),
+                                  _ChipBadge(label: 'Target: Mid-cap ARR \$50–100M'),
+                                ],
+                              ),
+                              const SizedBox(height: 16),
+                              const _InsightInputForm(),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: _InsightExecutiveSummary(),
+                    ),
+                  ],
+                );
+              },
+            ),
+    );
+  }
+}
+
+class _OpportunitiesPage extends StatelessWidget {
+  const _OpportunitiesPage();
+
+  @override
+  Widget build(BuildContext context) {
+    final table = MiniTableData(
+      headers: const ['Client', 'Idea', 'Expected Wallet', 'Status'],
+      rows: const [
+        [
+          'Global Industrials A',
+          'Capital structure review & refinancing',
+          '\$3.5–4.5m',
+          'Open'
+        ],
+        [
+          'Mid-cap Tech B',
+          'Growth capex financing / recap',
+          '\$2.0–2.8m',
+          'Shortlisted'
+        ],
+        [
+          'UHNW Family C',
+          'Portfolio rebalancing & alternatives',
+          '\$0.8–1.1m',
+          'To review'
+        ],
+      ],
+    );
+
+    final isMobile = MediaQuery.of(context).size.width < 768;
+    return Padding(
+      padding: EdgeInsets.all(isMobile ? 12 : 24),
+      child: isMobile
+          ? Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Text(
+                          'Idea Pipeline (Mocked)',
+                          style:
+                              TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                        ),
+                        const SizedBox(height: 6),
+                        const Text(
+                          'GenAI-ranked ideas based on mocked wallet data, risk appetite, and recent activity.',
+                          style: TextStyle(fontSize: 11, color: Colors.grey),
+                        ),
+                        const SizedBox(height: 12),
+                        SizedBox(
+                          height: 200,
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: _MiniTable(table: table),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                const _OpportunityDetailPanel(),
+              ],
+            )
+          : LayoutBuilder(
+              builder: (context, constraints) {
+                return Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: constraints.maxWidth * 0.45,
+                      child: Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Idea Pipeline (Mocked)',
+                                style:
+                                    TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                              ),
+                              const SizedBox(height: 6),
+                              const Text(
+                                'GenAI-ranked ideas based on mocked wallet data, risk appetite, and recent activity.',
+                                style: TextStyle(fontSize: 11, color: Colors.grey),
+                              ),
+                              const SizedBox(height: 12),
+                              SizedBox(
+                                height: 300,
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: _MiniTable(table: table),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: _OpportunityDetailPanel(),
+                    ),
+                  ],
+                );
+              },
+            ),
+    );
+  }
+}
+
+class _OpportunityDetailPanel extends StatelessWidget {
+  const _OpportunityDetailPanel();
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: const [
+              Text(
+                'Example Opportunity Detail (Mocked)',
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+              ),
+              SizedBox(height: 8),
+              Text(
+                'Client: Global Industrials A\nIdea: Capital structure review & refinancing\nExpected wallet: ~\$3.5–4.5m over 12–18 months.',
+                style: TextStyle(fontSize: 12),
+              ),
+              SizedBox(height: 10),
+              _SummarySection(
+                title: 'GenAI Rationale',
+                bullets: [
+                  'Leverage levels and maturity profile suggest room to optimise funding mix.',
+                  'Rates environment and credit spreads make refinancing attractive within the next 6–12 months.',
+                  'Peer analysis indicates competitors have recently executed similar transactions.',
+                ],
+              ),
+              _SummarySection(
+                title: 'Suitability & Pre-Trade View (Mocked)',
+                bullets: [
+                  'Client profile and risk appetite align with proposed structure and tenors.',
+                  'No obvious product eligibility issues based on mocked KYC / suitability flags.',
+                  'InsightEngine still recommends confirming internal limits and current list status.',
+                ],
+              ),
+              _SummarySection(
+                title: 'Recommended Banker Actions',
+                bullets: [
+                  'Schedule a 30-minute strategy call with CFO / Treasurer within the next 2 weeks.',
+                  'Prepare a short deck summarising current capital structure, peer positioning, and 2–3 refinancing options.',
+                  'Loop in Markets and DCM teams for integrated hedging and execution planning.',
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _TriggerEventsPage extends StatelessWidget {
+  const _TriggerEventsPage();
+
+  @override
+  Widget build(BuildContext context) {
+    final isMobile = MediaQuery.of(context).size.width < 768;
+    return Padding(
+      padding: EdgeInsets.all(isMobile ? 12 : 24),
+      child: isMobile
+          ? Column(
+              children: const [
+                _TriggerFeedCard(),
+                SizedBox(height: 16),
+                _TriggerImpactCard(),
+              ],
+            )
+          : Row(
+              children: const [
+                Expanded(child: _TriggerFeedCard()),
+                SizedBox(width: 16),
+                Expanded(child: _TriggerImpactCard()),
+              ],
+            ),
+    );
+  }
+}
+
+class _MeetingsPage extends StatefulWidget {
+  const _MeetingsPage();
+
+  @override
+  State<_MeetingsPage> createState() => _MeetingsPageState();
+}
+
+class _MeetingsPageState extends State<_MeetingsPage> {
+  Map<String, String>? _selectedMeeting;
+  String? _selectedAction; // 'brief' or 'followup'
+
+  final List<Map<String, String>> _meetings = [
+    {
+      'time': '09:30',
+      'client': 'Global Industrials A',
+      'type': 'Strategy update',
+    },
+    {
+      'time': '11:00',
+      'client': 'Mid-cap Tech B',
+      'type': 'Quarterly portfolio review',
+    },
+    {
+      'time': '15:15',
+      'client': 'UHNW Family C',
+      'type': 'Wealth review & alternatives',
+    },
+  ];
+
+  void _selectMeeting(Map<String, String> meeting, String action) {
+    setState(() {
+      _selectedMeeting = meeting;
+      _selectedAction = action;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
+    final isMobile = MediaQuery.of(context).size.width < 768;
+    return Padding(
+      padding: EdgeInsets.all(isMobile ? 12 : 24),
+      child: isMobile
+          ? Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Text(
+                          "Today's Meetings (Mocked)",
+                          style:
+                              TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                        ),
+                        const SizedBox(height: 6),
+                        const Text(
+                          'Tap a meeting and use GenAI buttons to prepare briefs and follow-ups.',
+                          style: TextStyle(fontSize: 11, color: Colors.grey),
+                        ),
+                        const SizedBox(height: 12),
+                        SizedBox(
+                          height: 300,
+                          child: ListView.builder(
+                            itemCount: _meetings.length,
+                            itemBuilder: (context, index) {
+                              final m = _meetings[index];
+                              final isSelected = _selectedMeeting == m;
+                              return Container(
+                                margin: const EdgeInsets.only(bottom: 8),
+                                decoration: BoxDecoration(
+                                  color: isSelected
+                                      ? Theme.of(context)
+                                          .colorScheme
+                                          .primary
+                                          .withOpacity(0.1)
+                                      : Colors.transparent,
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: isSelected
+                                      ? Border.all(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary,
+                                          width: 1)
+                                      : null,
+                                ),
+                                child: ListTile(
+                                  dense: true,
+                                  leading: CircleAvatar(
+                                    radius: 14,
+                                    backgroundColor:
+                                        Theme.of(context).colorScheme.primary,
+                                    child: Text(
+                                      m['time']!,
+                                      style: const TextStyle(
+                                          fontSize: 9, color: Colors.white),
+                                    ),
+                                  ),
+                                  title: Text(
+                                    m['client']!,
+                                    style: TextStyle(
+                                      fontWeight: isSelected
+                                          ? FontWeight.w600
+                                          : FontWeight.normal,
+                                    ),
+                                  ),
+                                  subtitle: Text(
+                                    m['type']!,
+                                    style: const TextStyle(
+                                        fontSize: 11, color: Colors.grey),
+                                  ),
+                                  trailing: Wrap(
+                                    spacing: 6,
+                                    children: [
+                                      OutlinedButton(
+                                        onPressed: () {
+                                          _selectMeeting(m, 'brief');
+                                        },
+                                        style: OutlinedButton.styleFrom(
+                                          side: BorderSide(
+                                            color: _selectedMeeting == m &&
+                                                    _selectedAction == 'brief'
+                                                ? Theme.of(context)
+                                                    .colorScheme
+                                                    .primary
+                                                : Colors.grey,
+                                          ),
+                                        ),
+                                        child: const Text('Brief'),
+                                      ),
+                                      OutlinedButton(
+                                        onPressed: () {
+                                          _selectMeeting(m, 'followup');
+                                        },
+                                        style: OutlinedButton.styleFrom(
+                                          side: BorderSide(
+                                            color: _selectedMeeting == m &&
+                                                    _selectedAction == 'followup'
+                                                ? Theme.of(context)
+                                                    .colorScheme
+                                                    .primary
+                                                : Colors.grey,
+                                          ),
+                                        ),
+                                        child: const Text('Follow-up'),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                _selectedMeeting == null
+                    ? const Card(
+                        child: Padding(
+                          padding: EdgeInsets.all(24),
+                          child: Center(
+                            child: Text(
+                              'Select a meeting and click "Brief" or "Follow-up" to view GenAI-generated content.',
+                              style: TextStyle(fontSize: 12, color: Colors.grey),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                      )
+                    : _MeetingDetailPanel(
+                        meeting: _selectedMeeting!,
+                        action: _selectedAction!,
+                      ),
+              ],
+            )
+          : LayoutBuilder(
+              builder: (context, constraints) {
+                return Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: constraints.maxWidth * 0.45,
+                      child: Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                "Today's Meetings (Mocked)",
+                                style:
+                                    TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                              ),
+                              const SizedBox(height: 6),
+                              const Text(
+                                'Tap a meeting and use GenAI buttons to prepare briefs and follow-ups.',
+                                style: TextStyle(fontSize: 11, color: Colors.grey),
+                              ),
+                              const SizedBox(height: 12),
+                              SizedBox(
+                                height: 400,
+                                child: ListView.builder(
+                                  itemCount: _meetings.length,
+                                  itemBuilder: (context, index) {
+                                    final m = _meetings[index];
+                                    final isSelected = _selectedMeeting == m;
+                                    return Container(
+                                      margin: const EdgeInsets.only(bottom: 8),
+                                      decoration: BoxDecoration(
+                                        color: isSelected
+                                            ? Theme.of(context)
+                                                .colorScheme
+                                                .primary
+                                                .withOpacity(0.1)
+                                            : Colors.transparent,
+                                        borderRadius: BorderRadius.circular(8),
+                                        border: isSelected
+                                            ? Border.all(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .primary,
+                                                width: 1)
+                                            : null,
+                                      ),
+                                      child: ListTile(
+                                        dense: true,
+                                        leading: CircleAvatar(
+                                          radius: 14,
+                                          backgroundColor:
+                                              Theme.of(context).colorScheme.primary,
+                                          child: Text(
+                                            m['time']!,
+                                            style: const TextStyle(
+                                                fontSize: 9, color: Colors.white),
+                                          ),
+                                        ),
+                                        title: Text(
+                                          m['client']!,
+                                          style: TextStyle(
+                                            fontWeight: isSelected
+                                                ? FontWeight.w600
+                                                : FontWeight.normal,
+                                          ),
+                                        ),
+                                        subtitle: Text(
+                                          m['type']!,
+                                          style: const TextStyle(
+                                              fontSize: 11, color: Colors.grey),
+                                        ),
+                                        trailing: Wrap(
+                                          spacing: 6,
+                                          children: [
+                                            OutlinedButton(
+                                              onPressed: () {
+                                                _selectMeeting(m, 'brief');
+                                              },
+                                              style: OutlinedButton.styleFrom(
+                                                side: BorderSide(
+                                                  color: _selectedMeeting == m &&
+                                                          _selectedAction == 'brief'
+                                                      ? Theme.of(context)
+                                                          .colorScheme
+                                                          .primary
+                                                      : Colors.grey,
+                                                ),
+                                              ),
+                                              child: const Text('Brief'),
+                                            ),
+                                            OutlinedButton(
+                                              onPressed: () {
+                                                _selectMeeting(m, 'followup');
+                                              },
+                                              style: OutlinedButton.styleFrom(
+                                                side: BorderSide(
+                                                  color: _selectedMeeting == m &&
+                                                          _selectedAction == 'followup'
+                                                      ? Theme.of(context)
+                                                          .colorScheme
+                                                          .primary
+                                                      : Colors.grey,
+                                                ),
+                                              ),
+                                              child: const Text('Follow-up'),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: _selectedMeeting == null
+                          ? const Card(
+                              child: Padding(
+                                padding: EdgeInsets.all(24),
+                                child: Center(
+                                  child: Text(
+                                    'Select a meeting and click "Brief" or "Follow-up" to view GenAI-generated content.',
+                                    style:
+                                        TextStyle(fontSize: 12, color: Colors.grey),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ),
+                            )
+                          : _MeetingDetailPanel(
+                              meeting: _selectedMeeting!,
+                              action: _selectedAction!,
+                            ),
+                    ),
+                  ],
+                );
+              },
+            ),
+    );
+  }
+}
+
+class _MeetingDetailPanel extends StatelessWidget {
+  final Map<String, String> meeting;
+  final String action;
+
+  const _MeetingDetailPanel({
+    required this.meeting,
+    required this.action,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final client = meeting['client'] ?? '';
+    final time = meeting['time'] ?? '';
+    final type = meeting['type'] ?? '';
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header
+              Row(
+                children: [
+                  Icon(
+                    action == 'brief'
+                        ? Icons.description_outlined
+                        : Icons.email_outlined,
+                    color: Colors.cyanAccent,
+                    size: 24,
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          action == 'brief'
+                              ? 'Meeting Brief (GenAI Generated)'
+                              : 'Follow-up Summary (GenAI Generated)',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        // The following code block is inserted here
+                        // This insertion seems to be a full widget tree, which might be intended for a different context
+                        // or implies a larger refactor. Assuming it's meant to be inserted as a new section.
+                        // However, the provided snippet also contains parts of the original code.
+                        // I will insert the "AI Customer Insights Panel" part as requested,
+                        // and try to make sense of the surrounding context provided in the instruction.
+
+                        // The instruction seems to be a mix of the original code and the new code.
+                        // I will insert the AICustomerInsightsPanel and its surrounding SizedBoxes
+                        // after the header's sub-text, as indicated by the instruction's context.
+
+                        // Original line: Text('$client · $time · $type', ...)
+                        Text(
+                          '$client · $time · $type',
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: Colors.green.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.green.withOpacity(0.3)),
+                    ),
+                    child: const Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.auto_awesome, size: 12, color: Colors.green),
+                        SizedBox(width: 4),
+                        Text(
+                          'GenAI',
+                          style: TextStyle(
+                            fontSize: 10,
+                            color: Colors.green,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              const Divider(),
+              const SizedBox(height: 20),
+
+
+              // Content based on action type
+              if (action == 'brief') ...[
+                _BriefContent(client: client, type: type),
+              ] else ...[
+                _FollowUpContent(client: client, type: type),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _BriefContent extends StatelessWidget {
+  final String client;
+  final String type;
+
+  const _BriefContent({
+    required this.client,
+    required this.type,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    // Different content based on client
+    Map<String, Map<String, List<String>>> briefData = {
+      'Global Industrials A': {
+        'talkingPoints': [
+          'Review strategic priorities and capital allocation framework for the next 12-18 months.',
+          'Discuss current leverage position and potential refinancing opportunities given rate environment.',
+          'Explore cross-sell opportunities in Markets solutions (FX hedging, interest rate products).',
+          'Address any concerns about supply chain resilience and working capital optimization.',
+        ],
+        'questions': [
+          'What are your top 3 strategic priorities for the coming year?',
+          'How are you thinking about capital structure optimization in the current rate environment?',
+          'Are there any upcoming M&A or divestiture activities we should be aware of?',
+          'What level of credit facility headroom do you want to maintain?',
+        ],
+        'context': [
+          'Client has \$1.8bn in assets with the bank, primarily in lending (\$900m).',
+          'Recent activity: Completed \$250M equity offering 2 weeks ago.',
+          'Share of wallet: 54% - strong in lending, underweight in Markets.',
+          'Credit rating: A- with medium risk profile.',
+        ],
+      },
+      'Mid-cap Tech B': {
+        'talkingPoints': [
+          'Review portfolio performance vs benchmark and tracking error over the last quarter.',
+          'Discuss recent sector developments in SaaS / Cloud, including valuation trends.',
+          'Explore ideas around risk management, hedging, and selective growth capital.',
+          'Address questions about growth financing options and potential recapitalization.',
+        ],
+        'questions': [
+          'How do you see your capital needs evolving over the next 12–24 months?',
+          'Are there any upcoming events (M&A, liquidity events, refinancing) we should plan around?',
+          'What level of drawdown or volatility is acceptable in different parts of your portfolio?',
+          'How are you thinking about growth capex financing in the current environment?',
+        ],
+        'context': [
+          'Client has \$7.9bn in assets, leverage at 1.4x, ROIC of 13.8%.',
+          'Wallet gap identified: \$9-12M in potential additional fee opportunities.',
+          'Recent activity: Quarterly portfolio review - strong performance in tech sector.',
+          'Opportunity: Growth capex financing / recapitalization potential.',
+        ],
+      },
+      'UHNW Family C': {
+        'talkingPoints': [
+          'Review wealth portfolio performance and asset allocation strategy.',
+          'Discuss alternative investment opportunities and private market access.',
+          'Explore estate planning and wealth transfer considerations.',
+          'Address risk management and tax optimization strategies.',
+        ],
+        'questions': [
+          'What are your long-term wealth preservation and growth objectives?',
+          'How are you thinking about generational wealth transfer?',
+          'What level of liquidity do you need to maintain?',
+          'Are you interested in exploring alternative investments or private market opportunities?',
+        ],
+        'context': [
+          'Ultra High Net Worth family with \$550M in wealth management assets.',
+          'Portfolio rebalancing opportunity: \$0.8-1.1M in potential fee wallet.',
+          'Recent activity: Wealth review - exploring alternatives and structured products.',
+          'Focus: Diversification, tax efficiency, and long-term wealth preservation.',
+        ],
+      },
+    };
+
+    final data = briefData[client] ?? briefData['Mid-cap Tech B']!;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Meeting Objective',
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          'Align on $type and explore opportunities to deepen the relationship and provide value-added solutions.',
+          style: const TextStyle(fontSize: 12),
+        ),
+        const SizedBox(height: 20),
+        _SummarySection(
+          title: 'Key Talking Points',
+          bullets: data['talkingPoints']!,
+        ),
+        const SizedBox(height: 20),
+        _SummarySection(
+          title: 'Client Context (GenAI Summary)',
+          bullets: data['context']!,
+        ),
+        const SizedBox(height: 20),
+        _SummarySection(
+          title: 'GenAI-Suggested Questions',
+          bullets: data['questions']!,
+        ),
+        const SizedBox(height: 20),
+        const Text(
+          'Proposed Follow-Ups',
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(height: 8),
+        const Text(
+          '• Send a short summary email within 24 hours capturing decisions and next steps.\n'
+          '• Schedule a separate session with product specialists to go deeper on shortlisted ideas.\n'
+          '• Log key preferences and risk insights into CRM to refine future GenAI suggestions.',
+          style: TextStyle(fontSize: 12),
+        ),
+      ],
+    );
+  }
+}
+
+class _FollowUpContent extends StatelessWidget {
+  final String client;
+  final String type;
+
+  const _FollowUpContent({
+    required this.client,
+    required this.type,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    // Different content based on client
+    Map<String, Map<String, dynamic>> followUpData = {
+      'Global Industrials A': {
+        'summary': 'Met with $client to discuss strategic priorities and capital allocation. Client expressed interest in exploring refinancing opportunities and Markets solutions.',
+        'keyDecisions': [
+          'Client will review refinancing proposal for \$500M revolving credit facility.',
+          'Agreed to schedule follow-up meeting with Markets team for FX hedging solutions.',
+          'Client wants to explore working capital optimization products.',
+        ],
+        'nextSteps': [
+          'Send refinancing proposal within 48 hours with rate scenarios.',
+          'Coordinate with Markets team to prepare FX hedging presentation.',
+          'Schedule working capital review session for next week.',
+        ],
+        'emailDraft': 'Subject: Follow-up: $type - $client\n\nDear [Client Name],\n\nThank you for taking the time to meet today to discuss your strategic priorities and capital allocation framework.\n\nAs discussed, I\'ll be sending you:\n1. Refinancing proposal for your \$500M revolving credit facility with current rate scenarios\n2. FX hedging solutions presentation from our Markets team\n3. Working capital optimization analysis\n\nI\'ll have these materials to you within 48 hours and will coordinate a follow-up session with our Markets team.\n\nPlease don\'t hesitate to reach out if you have any questions in the meantime.\n\nBest regards,\n[Your Name]',
+      },
+      'Mid-cap Tech B': {
+        'summary': 'Conducted quarterly portfolio review with $client. Portfolio performance exceeded benchmarks. Discussed growth financing options and risk management strategies.',
+        'keyDecisions': [
+          'Client interested in exploring growth capex financing options.',
+          'Agreed to evaluate recapitalization scenarios for Q2 2024.',
+          'Client wants to review hedging strategies for interest rate exposure.',
+        ],
+        'nextSteps': [
+          'Prepare growth financing proposal with term sheet options.',
+          'Run recapitalization scenarios and present to client.',
+          'Schedule risk management workshop with Markets team.',
+        ],
+        'emailDraft': 'Subject: Follow-up: $type - $client\n\nDear [Client Name],\n\nThank you for the productive quarterly portfolio review today. Your portfolio\'s strong performance against benchmarks is impressive.\n\nAs we discussed, I\'ll be preparing:\n1. Growth capex financing proposal with various term sheet structures\n2. Recapitalization scenarios for Q2 2024 consideration\n3. Interest rate hedging strategy recommendations\n\nI\'ll have these materials ready for our next meeting. I\'ll also coordinate a risk management workshop with our Markets team.\n\nLooking forward to continuing our discussion.\n\nBest regards,\n[Your Name]',
+      },
+      'UHNW Family C': {
+        'summary': 'Conducted wealth review with $client. Discussed portfolio rebalancing, alternative investments, and estate planning considerations.',
+        'keyDecisions': [
+          'Client interested in exploring private market opportunities.',
+          'Agreed to review estate planning structures and tax optimization.',
+          'Client wants to evaluate structured products for wealth preservation.',
+        ],
+        'nextSteps': [
+          'Prepare private markets opportunity set presentation.',
+          'Coordinate with wealth planning team for estate planning review.',
+          'Schedule structured products discussion with Solutions team.',
+        ],
+        'emailDraft': 'Subject: Follow-up: $type - $client\n\nDear [Client Name],\n\nThank you for the comprehensive wealth review today. I appreciate you sharing your long-term wealth preservation and growth objectives.\n\nAs discussed, I\'ll be preparing:\n1. Private market opportunities presentation with due diligence summaries\n2. Estate planning structure review with our wealth planning specialists\n3. Structured products analysis for wealth preservation strategies\n\nI\'ll coordinate with our specialists and have these materials ready for our next session.\n\nBest regards,\n[Your Name]',
+      },
+    };
+
+    final data = followUpData[client] ?? followUpData['Mid-cap Tech B']!;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Meeting Summary',
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          data['summary'] as String,
+          style: const TextStyle(fontSize: 12),
+        ),
+        const SizedBox(height: 20),
+        _SummarySection(
+          title: 'Key Decisions & Outcomes',
+          bullets: data['keyDecisions'] as List<String>,
+        ),
+        const SizedBox(height: 20),
+        _SummarySection(
+          title: 'Next Steps',
+          bullets: data['nextSteps'] as List<String>,
+        ),
+        const SizedBox(height: 20),
+        const Text(
+          'Draft Follow-up Email (GenAI Generated)',
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surface.withOpacity(0.5),
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: Colors.white12),
+          ),
+          child: Text(
+            data['emailDraft'] as String,
+            style: const TextStyle(
+              fontSize: 11,
+              fontFamily: 'monospace',
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+        Row(
+          children: [
+            Expanded(
+              child: OutlinedButton.icon(
+                onPressed: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Mocked: Email copied to clipboard'),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.copy, size: 16),
+                label: const Text('Copy Email'),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Mocked: Email sent to client'),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.send, size: 16),
+                label: const Text('Send Email'),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _MeetingBriefExampleCard extends StatelessWidget {
+  const _MeetingBriefExampleCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: const [
+              Text(
+                'Mocked Meeting Brief Example',
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+              ),
+              SizedBox(height: 6),
+              Text(
+                'Client: Mid-cap Tech B · Meeting: Quarterly portfolio review\n'
+                'Objective: Align on performance, risk, and forward-looking opportunities.',
+                style: TextStyle(fontSize: 12),
+              ),
+              SizedBox(height: 10),
+              _SummarySection(
+                title: 'Key Talking Points',
+                bullets: [
+                  'Review portfolio performance vs benchmark and tracking error over the last quarter.',
+                  'Discuss recent sector developments in SaaS / Cloud, including valuation trends.',
+                  'Explore ideas around risk management, hedging, and selective growth capital.',
+                ],
+              ),
+              _SummarySection(
+                title: 'GenAI-Suggested Questions',
+                bullets: [
+                  'How do you see your capital needs evolving over the next 12–24 months?',
+                  'Are there any upcoming events (M&A, liquidity events, refinancing) we should plan around?',
+                  'What level of drawdown or volatility is acceptable in different parts of your portfolio?',
+                ],
+              ),
+              _SummarySection(
+                title: 'Proposed Follow-Ups',
+                bullets: [
+                  'Send a short summary email within 24 hours capturing decisions and next steps.',
+                  'Schedule a separate session with product specialists to go deeper on shortlisted ideas.',
+                  'Log key preferences and risk insights into CRM to refine future GenAI suggestions.',
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _WalletOptimizationPage extends StatelessWidget {
+  const _WalletOptimizationPage();
+
+  @override
+  Widget build(BuildContext context) {
+    final isMobile = MediaQuery.of(context).size.width < 768;
+    return Padding(
+      padding: EdgeInsets.all(isMobile ? 12 : 24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: const [
+          Text(
+            'Wallet & Capital Optimization (Mocked)',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 8),
+          Text(
+            'Illustrates how a universal bank could scan internal AUM, leverage, and benchmarking data to surface ideas.',
+            style: TextStyle(fontSize: 12, color: Colors.grey),
+          ),
+          SizedBox(height: 16),
+          _WalletOptimizationBody(),
+        ],
+      ),
+    );
+  }
+}
+
+class _InboxInsightsPage extends StatelessWidget {
+  const _InboxInsightsPage();
+
+  @override
+  Widget build(BuildContext context) {
+    final threads = [
+      {
+        'title': 'Internal: Sector update – Software & Services',
+        'snippet':
+            'Analyst team published a new note on SaaS valuations and M&A.',
+      },
+      {
+        'title': 'Client email: Follow-up questions from Global Industrials A',
+        'snippet':
+            'Client is asking for clarification on leverage and rating implications.',
+      },
+      {
+        'title': 'Markets commentary: Rates and FX weekly',
+        'snippet':
+            'Strategy team highlights key macro themes for the coming week.',
+      },
+    ];
+
+    final isMobile = MediaQuery.of(context).size.width < 768;
+    return Padding(
+      padding: EdgeInsets.all(isMobile ? 12 : 24),
+      child: isMobile
+          ? Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Text(
+                          'Inbox Items (Mocked)',
+                          style:
+                              TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                        ),
+                        const SizedBox(height: 6),
+                        const Text(
+                          'Illustrative internal emails / notes that can be summarised into client actions.',
+                          style: TextStyle(fontSize: 11, color: Colors.grey),
+                        ),
+                        const SizedBox(height: 12),
+                        SizedBox(
+                          height: 250,
+                          child: ListView.separated(
+                            itemCount: threads.length,
+                            separatorBuilder: (_, __) => const Divider(height: 8),
+                            itemBuilder: (context, index) {
+                              final t = threads[index];
+                              return ListTile(
+                                dense: true,
+                                title: Text(
+                                  t['title']!,
+                                  style: const TextStyle(fontSize: 13),
+                                ),
+                                subtitle: Text(
+                                  t['snippet']!,
+                                  style: const TextStyle(
+                                      fontSize: 11, color: Colors.grey),
+                                ),
+                                trailing: TextButton(
+                                  onPressed: () {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                            'Mocked: GenAI summarising "${t['title']}" and mapping actions to clients.'),
+                                      ),
+                                    );
+                                  },
+                                  child: const Text('Summarise'),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                const _InboxSummaryExampleCard(),
+              ],
+            )
+          : LayoutBuilder(
+              builder: (context, constraints) {
+                return Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: constraints.maxWidth * 0.45,
+                      child: Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Inbox Items (Mocked)',
+                                style:
+                                    TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                              ),
+                              const SizedBox(height: 6),
+                              const Text(
+                                'Illustrative internal emails / notes that can be summarised into client actions.',
+                                style: TextStyle(fontSize: 11, color: Colors.grey),
+                              ),
+                              const SizedBox(height: 12),
+                              SizedBox(
+                                height: 400,
+                                child: ListView.separated(
+                                  itemCount: threads.length,
+                                  separatorBuilder: (_, __) => const Divider(height: 8),
+                                  itemBuilder: (context, index) {
+                                    final t = threads[index];
+                                    return ListTile(
+                                      dense: true,
+                                      title: Text(
+                                        t['title']!,
+                                        style: const TextStyle(fontSize: 13),
+                                      ),
+                                      subtitle: Text(
+                                        t['snippet']!,
+                                        style: const TextStyle(
+                                            fontSize: 11, color: Colors.grey),
+                                      ),
+                                      trailing: TextButton(
+                                        onPressed: () {
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                  'Mocked: GenAI summarising "${t['title']}" and mapping actions to clients.'),
+                                            ),
+                                          );
+                                        },
+                                        child: const Text('Summarise'),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: _InboxSummaryExampleCard(),
+                    ),
+                  ],
+                );
+              },
+            ),
+    );
+  }
+}
+
+class _InboxSummaryExampleCard extends StatelessWidget {
+  const _InboxSummaryExampleCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: const [
+              Text(
+                'Mocked GenAI Summary Example',
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+              ),
+              SizedBox(height: 6),
+              Text(
+                'InsightEngine has summarised the latest sector update and markets commentary and mapped them to your top clients.',
+                style: TextStyle(fontSize: 12),
+              ),
+              SizedBox(height: 10),
+              _SummarySection(
+                title: 'Key Themes',
+                bullets: [
+                  'SaaS valuations remain supported for high-quality names, but dispersion is increasing.',
+                  'Rates and FX volatility create both risk and opportunity for clients with global footprints.',
+                  'Select sponsors are actively evaluating software and infra assets for M&A.',
+                ],
+              ),
+              _SummarySection(
+                title: 'Suggested Client Actions',
+                bullets: [
+                  'Share a short sector update with 3–5 key SaaS and infra clients, highlighting tailored angles.',
+                  'Propose a rates / FX risk review for clients with material non-USD exposures.',
+                  'Use the Opportunities page to prioritise outreach where macro themes intersect with client needs.',
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _DueDiligencePage extends StatelessWidget {
+  const _DueDiligencePage();
+
+  @override
+  Widget build(BuildContext context) {
+    final isMobile = MediaQuery.of(context).size.width < 768;
+    return Padding(
+      padding: EdgeInsets.all(isMobile ? 12 : 24),
+      child: isMobile
+          ? Column(
+              children: const [
+                _PreTradeChecklistCard(),
+                SizedBox(height: 16),
+                _FactCheckCard(),
+              ],
+            )
+          : Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: const [
+                Expanded(child: _PreTradeChecklistCard()),
+                SizedBox(width: 16),
+                Expanded(child: _FactCheckCard()),
+              ],
+            ),
+    );
+  }
+}
+
+class _ContentGenerationPage extends StatelessWidget {
+  const _ContentGenerationPage();
+
+  @override
+  Widget build(BuildContext context) {
+    final isMobile = MediaQuery.of(context).size.width < 768;
+    return DefaultTabController(
+      length: 2,
+      child: Padding(
+        padding: EdgeInsets.all(isMobile ? 12 : 24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              'Draft pitch materials and deal documentation using structured inputs.',
+              style: TextStyle(fontSize: 12, color: Colors.grey),
+            ),
+            const SizedBox(height: 16),
+            Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surface,
+                borderRadius: BorderRadius.circular(24),
+              ),
+              child: TabBar(
+                tabs: [
+                  Tab(
+                    text: isMobile ? 'Pitch' : 'Pitch Slides & Narrative',
+                  ),
+                  Tab(
+                    text: isMobile
+                        ? 'Legal Docs'
+                        : 'Legal Docs (NDA / Term Sheet / LOI)',
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            SizedBox(
+              height: isMobile ? 600 : 700,
+              child: const TabBarView(
+                children: [
+                  _PitchContentTab(),
+                  _LegalDocsTab(),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ChipBadge extends StatelessWidget {
+  final String label;
+
+  const _ChipBadge({required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        color: Colors.white10,
+        border: Border.all(color: Colors.white12),
+      ),
+      child: Text(
+        label,
+        style: const TextStyle(fontSize: 11, color: Colors.grey),
+      ),
+    );
+  }
+}
+
+class _InsightInputForm extends StatefulWidget {
+  const _InsightInputForm();
+
+  @override
+  State<_InsightInputForm> createState() => _InsightInputFormState();
+}
+
+class _InsightInputFormState extends State<_InsightInputForm> {
+  String _selectedClient = 'Global Industrials';
+  String _selectedTarget = 'Mid-cap SaaS (ARR \$50–100M)';
+  String _selectedHorizon = 'Next 6–12 months';
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: _LabeledDropdown(
+                label: 'Client franchise',
+                value: _selectedClient,
+                items: const [
+                  'Global Industrials',
+                  'North America Sponsors',
+                  'Mid-Cap Tech',
+                ],
+                onChanged: (v) =>
+                    setState(() => _selectedClient = v ?? _selectedClient),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: _LabeledDropdown(
+                label: 'Target profile',
+                value: _selectedTarget,
+                items: const [
+                  'Mid-cap SaaS (ARR \$50–100M)',
+                  'Large-cap Cloud (ARR \$250M+)',
+                  'Private FinTech (Series D/E)',
+                ],
+                onChanged: (v) =>
+                    setState(() => _selectedTarget = v ?? _selectedTarget),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        _LabeledDropdown(
+          label: 'Time horizon',
+          value: _selectedHorizon,
+          items: const [
+            'Next 6–12 months',
+            'Next 12–24 months',
+            'Immediate (0–3 months)',
+          ],
+          onChanged: (v) =>
+              setState(() => _selectedHorizon = v ?? _selectedHorizon),
+        ),
+        const SizedBox(height: 16),
+        SizedBox(
+          height: 40,
+          child: ElevatedButton.icon(
+            onPressed: () {
+              // No-op: content is mocked on the right-hand card.
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text(
+                    'Mocked: executive summary refreshed based on your selections.',
+                  ),
+                  duration: Duration(seconds: 2),
+                ),
+              );
+            },
+            icon: const Icon(Icons.bolt_outlined, size: 18),
+            label: const Text('Generate 1-page executive summary (Mocked)'),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _LabeledDropdown extends StatelessWidget {
+  final String label;
+  final String value;
+  final List<String> items;
+  final ValueChanged<String?>? onChanged;
+
+  const _LabeledDropdown({
+    required this.label,
+    required this.value,
+    required this.items,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(fontSize: 11, color: Colors.grey),
+        ),
+        const SizedBox(height: 4),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: Colors.white10,
+            border: Border.all(color: Colors.white12),
+          ),
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton<String>(
+              isExpanded: true,
+              value: value,
+              items: [
+                for (final item in items)
+                  DropdownMenuItem(value: item, child: Text(item)),
+              ],
+              onChanged: onChanged,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _InsightExecutiveSummary extends StatelessWidget {
+  const _InsightExecutiveSummary();
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 3,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: const [
+              Text(
+                'Mocked 1-page Executive Summary',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              ),
+              SizedBox(height: 8),
+              Text(
+                'Senior banker briefing for a mid-cap SaaS target at a global investment bank.',
+                style: TextStyle(fontSize: 12, color: Colors.grey),
+              ),
+              SizedBox(height: 16),
+              _SummarySection(
+                title: 'Company Snapshot',
+                bullets: [
+                  'Mid-cap SaaS platform with \$72M ARR, ~118% net dollar retention, and 87% gross margin.',
+                  'Serving enterprise workflow / automation clients across US and Western Europe.',
+                  'Rule-of-40 score at ~54%, placing it in the top quartile of the bank’s SaaS coverage universe.',
+                ],
+              ),
+              _SummarySection(
+                title: 'Market & Valuation Context',
+                bullets: [
+                  'Public SaaS comps screening at 6.5x–8.5x NTM EV/Revenue; high-quality names still command a premium.',
+                  'Recent mid-cap take-privates have cleared at 35–45% premia vs unaffected, with EV/Rev prints of 7–9x.',
+                  'Rising rate environment moderating, but financing markets remain selective for sponsor-backed software.',
+                ],
+              ),
+              _SummarySection(
+                title: 'Key Opportunities for the Franchise',
+                bullets: [
+                  'Position bank as lead advisor on a potential sell-side or strategic partnership with large-cap cloud consolidators.',
+                  'Cross-sell structured equity and hedging to sponsors to optimise entry valuation and downside protection.',
+                  'Use InsightEngine to pre-emptively surface 5–7 logical buyers and construct a tailored outreach plan.',
+                ],
+              ),
+              _SummarySection(
+                title: 'Risks & Watchpoints',
+                bullets: [
+                  'Macro slowdown could delay CIO spend and elongate sales cycles, especially in Europe.',
+                  'High customer concentration in top 10 accounts (~38% of ARR) requires robust retention messaging.',
+                  'Execution risk around product roadmap integration for any strategic buyer.',
+                ],
+              ),
+              _SummarySection(
+                title: 'Suggested Next Step (Within 24–48 hours)',
+                bullets: [
+                  'Send a 3-slide \"Point of View\" note to the sponsor CIO and operating partner with 2–3 bespoke angles.',
+                  'Hold internal coverage huddle to align bankers, sponsors, and markets teams on strategy.',
+                  'Lock a client meeting within the next 10 days anchored on a proactive, InsightEngine-powered pitch.',
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _SummarySection extends StatelessWidget {
+  final String title;
+  final List<String> bullets;
+
+  const _SummarySection({required this.title, required this.bullets});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+        ),
+        const SizedBox(height: 4),
+        ...bullets.map(
+          (b) => Padding(
+            padding: const EdgeInsets.symmetric(vertical: 2),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text('•  ', style: TextStyle(fontSize: 12)),
+                Expanded(
+                  child: Text(
+                    b,
+                    style: const TextStyle(fontSize: 12),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 10),
+      ],
+    );
+  }
+}
+
+class _TriggerFeedCard extends StatelessWidget {
+  const _TriggerFeedCard();
+
+  @override
+  Widget build(BuildContext context) {
+    final triggers = [
+      'Earnings surprise: NorthPeak SaaS beats by +9% vs Street; raises FY ARR guidance.',
+      'Regulatory: EU opens consultation on data residency rules impacting cloud vendors.',
+      'M&A: MegaCloud announces acquisition of a private workflow-automation player.',
+      'Credit: HY tech spreads widen 35 bps; leveraged finance windows remain patchy.',
+    ];
+
+    return Card(
+      elevation: 3,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              'Simulated Trigger Event Feed',
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: 4),
+            const Text(
+              'What InsightEngine is \"listening to\" on behalf of bankers across the franchise.',
+              style: TextStyle(fontSize: 11, color: Colors.grey),
+            ),
+            const SizedBox(height: 12),
+            SizedBox(
+              height: 400,
+              child: ListView.separated(
+                itemBuilder: (context, index) {
+                  final e = triggers[index];
+                  return ListTile(
+                    dense: true,
+                    contentPadding: EdgeInsets.zero,
+                    leading: const Icon(Icons.bolt_outlined,
+                        size: 18, color: Colors.cyanAccent),
+                    title: Text(
+                      e,
+                      style: const TextStyle(fontSize: 12),
+                    ),
+                    subtitle: const Text(
+                      'Mocked: Impact brief auto-generated in <60 seconds.',
+                      style: TextStyle(fontSize: 10, color: Colors.grey),
+                    ),
+                  );
+                },
+                separatorBuilder: (_, __) => const Divider(height: 8),
+                itemCount: triggers.length,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _TriggerImpactCard extends StatelessWidget {
+  const _TriggerImpactCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 3,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: const [
+              Text(
+                'Example Impact Brief (Mocked)',
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+              ),
+              SizedBox(height: 6),
+              Text(
+                'Trigger: MegaCloud acquires private workflow-automation target.',
+                style: TextStyle(fontSize: 11, color: Colors.grey),
+              ),
+              SizedBox(height: 12),
+              _SummarySection(
+                title: 'Impact on Priority Client Base',
+                bullets: [
+                  'Creates pressure on independent workflow SaaS vendors in the \$50–150M ARR range to choose strategic paths.',
+                  'Large-cap consolidators will look for additional tuck-ins; sponsors will need clarity on valuation reset.',
+                  'Global banks with strong tech coverage can position as consolidation architects.',
+                ],
+              ),
+              _SummarySection(
+                title: 'Suggested Outreach within 1 hour',
+                bullets: [
+                  'Send a short, InsightEngine-generated note to 5–10 priority SaaS clients summarising deal read-through.',
+                  'Highlight where each client sits vs the acquired target on growth, margins, and valuation multiples.',
+                  'Propose a 30-minute call to walk through strategic options (sell, partner, acquire), backed by data.',
+                ],
+              ),
+              _SummarySection(
+                title: 'Pitch Hooks for Coverage Bankers',
+                bullets: [
+                  'Access to deep sponsor and strategic relationships to run dual-track processes.',
+                  'Ability to underwrite bespoke financing at scale (convertibles, TLB, RCF) to support consolidation.',
+                  'Use InsightEngine to surface a pipeline of 8–12 logical counterparties within minutes.',
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _WalletOptimizationBody extends StatelessWidget {
+  const _WalletOptimizationBody();
+
+  @override
+  Widget build(BuildContext context) {
+    final table = const MiniTableData(
+      headers: ['Client', 'AUM (\$bn)', 'Leverage', 'ROIC', 'Wallet Gap'],
+      rows: [
+        ['Global Industrials A', '18.4', '2.1x', '11.3%', '\$18–22M'],
+        ['Mid-cap Tech B', '7.9', '1.4x', '13.8%', '\$9–12M'],
+        ['Sponsors – Fund XII', '12.2', '2.6x', '15.1%', '\$6–8M'],
+        ['Large-cap Consumer C', '25.7', '3.0x', '9.4%', '\$10–14M'],
+      ],
+    );
+
+    final isMobile = MediaQuery.of(context).size.width < 768;
+    return isMobile
+        ? Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Card(
+                elevation: 3,
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text(
+                        'Mocked Wallet View',
+                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                      ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        'Internal estimate of fee pool vs realised wallet for key strategic relationships.',
+                        style: TextStyle(fontSize: 11, color: Colors.grey),
+                      ),
+                      const SizedBox(height: 12),
+                      SizedBox(
+                        height: 200,
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: _MiniTable(table: table),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Card(
+                elevation: 3,
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: const [
+                      Text(
+                        'Recommended Actions (Mocked)',
+                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                      ),
+                      SizedBox(height: 8),
+                      _SummarySection(
+                        title: 'Client: Global Industrials A',
+                        bullets: [
+                          'Under-penetrated in structured solutions and risk management vs peers.',
+                          'Propose a strategic capital structure review (target 2.8–3.2x leverage).',
+                          'Line up cross-coverage with Solutions and Markets teams for a joint pitch.',
+                        ],
+                      ),
+                      _SummarySection(
+                        title: 'Client: Mid-cap Tech B',
+                        bullets: [
+                          'Scope a dividend recap / growth capex financing using TLB or private credit.',
+                          'Use InsightEngine to pre-build a 6–8 page deck with comps and leverage cases.',
+                          'Set a meeting with sponsor deal team within the next 2 weeks.',
+                        ],
+                      ),
+                      _SummarySection(
+                        title: 'Sponsors – Fund XII',
+                        bullets: [
+                          'Deploy thematic ideas list in software, consumer, and infra; attach financing.',
+                          'Highlight where competitors have closed recent deals and how our bank can differentiate.',
+                          'Offer an "InsightEngine Day" showcasing always-on pipeline ideation.',
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          )
+        : LayoutBuilder(
+            builder: (context, constraints) {
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: constraints.maxWidth * 0.45,
+                    child: Card(
+                      elevation: 3,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Text(
+                              'Mocked Wallet View',
+                              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                            ),
+                            const SizedBox(height: 8),
+                            const Text(
+                              'Internal estimate of fee pool vs realised wallet for key strategic relationships.',
+                              style: TextStyle(fontSize: 11, color: Colors.grey),
+                            ),
+                            const SizedBox(height: 12),
+                            SizedBox(
+                              height: 300,
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: _MiniTable(table: table),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Card(
+                      elevation: 3,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: const [
+                            Text(
+                              'Recommended Actions (Mocked)',
+                              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                            ),
+                            SizedBox(height: 8),
+                            _SummarySection(
+                              title: 'Client: Global Industrials A',
+                              bullets: [
+                                'Under-penetrated in structured solutions and risk management vs peers.',
+                                'Propose a strategic capital structure review (target 2.8–3.2x leverage).',
+                                'Line up cross-coverage with Solutions and Markets teams for a joint pitch.',
+                              ],
+                            ),
+                            _SummarySection(
+                              title: 'Client: Mid-cap Tech B',
+                              bullets: [
+                                'Scope a dividend recap / growth capex financing using TLB or private credit.',
+                                'Use InsightEngine to pre-build a 6–8 page deck with comps and leverage cases.',
+                                'Set a meeting with sponsor deal team within the next 2 weeks.',
+                              ],
+                            ),
+                            _SummarySection(
+                              title: 'Sponsors – Fund XII',
+                              bullets: [
+                                'Deploy thematic ideas list in software, consumer, and infra; attach financing.',
+                                'Highlight where competitors have closed recent deals and how our bank can differentiate.',
+                                'Offer an "InsightEngine Day" showcasing always-on pipeline ideation.',
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
+          );
+  }
+}
+
+class _PreTradeChecklistCard extends StatelessWidget {
+  const _PreTradeChecklistCard();
+
+  @override
+  Widget build(BuildContext context) {
+    final steps = [
+      'Client classification & KYC checked (mocked).',
+      'Sanctions / restricted lists screened (mocked).',
+      'Information barriers and wall-crossing workflow simulated.',
+      'Approvals: coverage, credit, and compliance sign-offs.',
+      'Conflict checks vs other live mandates across the bank.',
+    ];
+
+    return Card(
+      elevation: 3,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Pre-Trade Checks (Simulation)',
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: 6),
+            const Text(
+              'Mock how a banker sees pre-trade checks executed in seconds instead of manual chasing.',
+              style: TextStyle(fontSize: 11, color: Colors.grey),
+            ),
+            const SizedBox(height: 12),
+            SizedBox(
+              height: 300,
+              child: ListView.builder(
+                itemCount: steps.length,
+                itemBuilder: (context, index) {
+                  final s = steps[index];
+                  return ListTile(
+                    dense: true,
+                    leading: const Icon(
+                      Icons.verified_outlined,
+                      color: Colors.greenAccent,
+                      size: 18,
+                    ),
+                    title: Text(
+                      s,
+                      style: const TextStyle(fontSize: 12),
+                    ),
+                    subtitle: const Text(
+                      'Status: Mocked · Completed in < 5s by InsightEngine',
+                      style: TextStyle(fontSize: 10, color: Colors.grey),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _FactCheckCard extends StatelessWidget {
+  const _FactCheckCard();
+
+  @override
+  Widget build(BuildContext context) {
+    final discrepancies = [
+      [
+        'Slide 3: \"FY24E revenue: \$820M\"',
+        'Internal forecast shows \$805M – slide is overstated by \$15M.'
+      ],
+      [
+        'Slide 7: \"Net leverage post deal: 3.0x\"',
+        'Internal credit case indicates 3.4x at close – revise or annotate assumptions.'
+      ],
+      [
+        'Slide 10: \"Top 3 customers <25% of revenue\"',
+        'Mocked internal data: top 3 are 29% – update concentration disclosure.'
+      ],
+    ];
+
+    return Card(
+      elevation: 3,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Fact-Checking Agent (Mocked)',
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: 6),
+            const Text(
+              'Instant cross-check of a draft pitch vs a mocked internal data corpus.',
+              style: TextStyle(fontSize: 11, color: Colors.grey),
+            ),
+            const SizedBox(height: 12),
+            SizedBox(
+              height: 300,
+              child: ListView.separated(
+                itemBuilder: (context, index) {
+                  final d = discrepancies[index];
+                  return ListTile(
+                    leading: const Icon(Icons.flag_outlined,
+                        color: Colors.orangeAccent, size: 20),
+                    title: Text(
+                      d[0],
+                      style: const TextStyle(fontSize: 12),
+                    ),
+                    subtitle: Text(
+                      d[1],
+                      style: const TextStyle(fontSize: 11, color: Colors.grey),
+                    ),
+                  );
+                },
+                separatorBuilder: (_, __) => const Divider(height: 8),
+                itemCount: discrepancies.length,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _PitchContentTab extends StatelessWidget {
+  const _PitchContentTab();
+
+  @override
+  Widget build(BuildContext context) {
+    final isMobile = MediaQuery.of(context).size.width < 768;
+    return isMobile
+        ? Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: const [
+              _PitchConfigCard(),
+              SizedBox(height: 16),
+              _PitchOutputCard(),
+            ],
+          )
+        : Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: const [
+              Expanded(child: _PitchConfigCard()),
+              SizedBox(width: 16),
+              Expanded(flex: 2, child: _PitchOutputCard()),
+            ],
+          );
+  }
+}
+
+class _PitchConfigCard extends StatelessWidget {
+  const _PitchConfigCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 3,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Pitch Parameters (Mocked)',
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: 8),
+            const _LabeledDropdown(
+              label: 'Client group',
+              value: 'Global Industrials',
+              items: [
+                'Global Industrials',
+                'Mid-Cap Tech',
+                'Sponsors',
+              ],
+              onChanged: null,
+            ),
+            const SizedBox(height: 8),
+            const _LabeledDropdown(
+              label: 'Deal type',
+              value: 'Sell-side M&A',
+              items: [
+                'Sell-side M&A',
+                'Buy-side M&A',
+                'Debt financing / recap',
+                'Equity / follow-on',
+              ],
+              onChanged: null,
+            ),
+            const SizedBox(height: 8),
+            const _LabeledDropdown(
+              label: 'Sector focus',
+              value: 'SaaS / Cloud',
+              items: [
+                'SaaS / Cloud',
+                'Consumer & Retail',
+                'Infrastructure',
+              ],
+              onChanged: null,
+            ),
+            const SizedBox(height: 16),
+            SizedBox(
+              height: 40,
+              child: ElevatedButton.icon(
+                onPressed: null,
+                icon: const Icon(Icons.slideshow_outlined, size: 18),
+                label: const Text('Generate pitch outline (Mocked)'),
+              ),
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              'In a live version, this would call the bank’s internal LLM to generate slide content.',
+              style: TextStyle(fontSize: 11, color: Colors.grey),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _PitchOutputCard extends StatelessWidget {
+  const _PitchOutputCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 3,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: const [
+              Text(
+                'Mocked Pitch Outline',
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+              ),
+              SizedBox(height: 8),
+              _SummarySection(
+                title: 'Slide 1–2: Company Overview',
+                bullets: [
+                  'Snapshot of revenue, ARR, growth, and margin profile vs the bank’s SaaS coverage peer set.',
+                  'Client positioning vs key public comps and recent sponsor-backed deals.',
+                  'High-level investment highlights and strategic rationale framing.',
+                ],
+              ),
+              _SummarySection(
+                title: 'Slide 3–4: Market Opportunity',
+                bullets: [
+                  'Total addressable market and penetration for relevant SaaS sub-vertical.',
+                  'Key secular trends (cloud migration, automation, AI) and tailwinds.',
+                  'Competitive landscape heatmap with bank insights on winners/laggards.',
+                ],
+              ),
+              _SummarySection(
+                title: 'Slide 5–6: Valuation & Comps',
+                bullets: [
+                  'Trading comps table (EV/Revenue, EV/EBITDA, Rule-of-40) with quartile markers.',
+                  'Transaction comps for last 12–18 months including take-privates and strategic M&A.',
+                  'Sensitivity analysis around entry / exit multiples and sponsor IRR cases.',
+                ],
+              ),
+              _SummarySection(
+                title: 'Slide 7–8: Transaction Rationale & Structure',
+                bullets: [
+                  'Strategic rationale for sell-side / buy-side / recap for this specific client.',
+                  'High-level structure diagrams (equity, debt, rollover, earn-out) with bank capabilities highlighted.',
+                  'Timeline and key milestones from mandate to signing and close.',
+                ],
+              ),
+              _SummarySection(
+                title: 'Slide 9–10: Next Steps & Ask',
+                bullets: [
+                  'Clear call-to-action for mandate award or next workshop session.',
+                  'Proposed workstreams and owners across coverage, sponsors, and markets.',
+                  'How InsightEngine will continue to surface opportunities post-pitch.',
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _LegalDocsTab extends StatelessWidget {
+  const _LegalDocsTab();
+
+  @override
+  Widget build(BuildContext context) {
+    final isMobile = MediaQuery.of(context).size.width < 768;
+    return isMobile
+        ? Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: const [
+              _LegalConfigCard(),
+              SizedBox(height: 16),
+              _LegalOutputCard(),
+            ],
+          )
+        : Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: const [
+              Expanded(child: _LegalConfigCard()),
+              SizedBox(width: 16),
+              Expanded(flex: 2, child: _LegalOutputCard()),
+            ],
+          );
+  }
+}
+
+class _SettingsPage extends StatefulWidget {
+  const _SettingsPage();
+
+  @override
+  State<_SettingsPage> createState() => _SettingsPageState();
+}
+
+class _SettingsPageState extends State<_SettingsPage> {
+  String _region = 'Global';
+  String _sectorFocus = 'All sectors';
+  bool _alertsEarnings = true;
+  bool _alertsMAndA = true;
+  bool _alertsRisk = true;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(24),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Coverage Preferences (Mocked)',
+                      style:
+                          TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'These settings are used to illustrate how InsightEngine can tailor GenAI outputs by banker.',
+                      style: TextStyle(fontSize: 11, color: Colors.grey),
+                    ),
+                    const SizedBox(height: 12),
+                    const Text(
+                      'Primary region',
+                      style: TextStyle(fontSize: 11, color: Colors.grey),
+                    ),
+                    const SizedBox(height: 4),
+                    DropdownButton<String>(
+                      value: _region,
+                      items: const [
+                        DropdownMenuItem(
+                          value: 'Global',
+                          child: Text('Global'),
+                        ),
+                        DropdownMenuItem(
+                          value: 'Americas',
+                          child: Text('Americas'),
+                        ),
+                        DropdownMenuItem(
+                          value: 'EMEA',
+                          child: Text('EMEA'),
+                        ),
+                        DropdownMenuItem(
+                          value: 'APAC',
+                          child: Text('APAC'),
+                        ),
+                      ],
+                      onChanged: (v) => setState(() => _region = v ?? 'Global'),
+                    ),
+                    const SizedBox(height: 12),
+                    const Text(
+                      'Sector focus',
+                      style: TextStyle(fontSize: 11, color: Colors.grey),
+                    ),
+                    const SizedBox(height: 4),
+                    DropdownButton<String>(
+                      value: _sectorFocus,
+                      items: const [
+                        DropdownMenuItem(
+                          value: 'All sectors',
+                          child: Text('All sectors'),
+                        ),
+                        DropdownMenuItem(
+                          value: 'SaaS / Tech',
+                          child: Text('SaaS / Tech'),
+                        ),
+                        DropdownMenuItem(
+                          value: 'Industrials',
+                          child: Text('Industrials'),
+                        ),
+                        DropdownMenuItem(
+                          value: 'Consumer',
+                          child: Text('Consumer'),
+                        ),
+                      ],
+                      onChanged: (v) =>
+                          setState(() => _sectorFocus = v ?? 'All sectors'),
+                    ),
+                    const SizedBox(height: 16),
+                    SizedBox(
+                      height: 40,
+                      child: ElevatedButton.icon(
+                        onPressed: () {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                'Mocked: preferences saved – future GenAI examples will be described as if tuned to $_region / $_sectorFocus.',
+                              ),
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.save_outlined, size: 18),
+                        label: const Text('Save preferences (Mocked)'),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Alert Settings (Mocked)',
+                      style:
+                          TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Configure which triggers InsightEngine should surface most prominently on your dashboard.',
+                      style: TextStyle(fontSize: 11, color: Colors.grey),
+                    ),
+                    const SizedBox(height: 12),
+                    SwitchListTile(
+                      contentPadding: EdgeInsets.zero,
+                      dense: true,
+                      title: const Text('Earnings & results'),
+                      subtitle: const Text(
+                        'Alerts when key clients or sectors publish results or guidance.',
+                        style: TextStyle(fontSize: 11, color: Colors.grey),
+                      ),
+                      value: _alertsEarnings,
+                      onChanged: (v) =>
+                          setState(() => _alertsEarnings = v),
+                    ),
+                    SwitchListTile(
+                      contentPadding: EdgeInsets.zero,
+                      dense: true,
+                      title: const Text('M&A / strategic events'),
+                      subtitle: const Text(
+                        'Alerts on announced deals or strategic reviews impacting your coverage.',
+                        style: TextStyle(fontSize: 11, color: Colors.grey),
+                      ),
+                      value: _alertsMAndA,
+                      onChanged: (v) =>
+                          setState(() => _alertsMAndA = v),
+                    ),
+                    SwitchListTile(
+                      contentPadding: EdgeInsets.zero,
+                      dense: true,
+                      title: const Text('Risk & markets'),
+                      subtitle: const Text(
+                        'Alerts on material market moves relevant to your clients.',
+                        style: TextStyle(fontSize: 11, color: Colors.grey),
+                      ),
+                      value: _alertsRisk,
+                      onChanged: (v) => setState(() => _alertsRisk = v),
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'In a production deployment, these settings would drive which triggers, ideas, and summaries are prioritised on your home screen.',
+                      style: TextStyle(fontSize: 11, color: Colors.grey),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _LegalConfigCard extends StatelessWidget {
+  const _LegalConfigCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 3,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: const [
+            Text(
+              'Deal Parameters (Mocked)',
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+            ),
+            SizedBox(height: 8),
+            _LabeledDropdown(
+              label: 'Document type',
+              value: 'Mutual NDA',
+              items: ['Mutual NDA', 'Term Sheet', 'Letter of Intent (LOI)'],
+              onChanged: null,
+            ),
+            SizedBox(height: 8),
+            _LabeledDropdown(
+              label: 'Counterparty',
+              value: 'Strategic buyer',
+              items: ['Strategic buyer', 'Financial sponsor', 'Co-investor'],
+              onChanged: null,
+            ),
+            SizedBox(height: 8),
+            _LabeledDropdown(
+              label: 'Governing law',
+              value: 'New York',
+              items: ['New York', 'English law', 'Local law'],
+              onChanged: null,
+            ),
+            SizedBox(height: 16),
+            Text(
+              'A live GenAI backend would map these inputs into templated clauses.',
+              style: TextStyle(fontSize: 11, color: Colors.grey),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _LegalOutputCard extends StatelessWidget {
+  const _LegalOutputCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 3,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: const [
+              Text(
+                'Mocked NDA / Term Sheet Snippet',
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+              ),
+              SizedBox(height: 8),
+              Text(
+                'Illustrative first-draft language – not legal advice and not linked to any real client.',
+                style: TextStyle(fontSize: 11, color: Colors.grey),
+              ),
+              SizedBox(height: 12),
+              SelectableText(
+                '1. Purpose. The parties intend to explore a potential transaction pursuant to which an international financial institution (the \"Bank\") may provide strategic advisory and financing services to the Counterparty (the \"Company\"). In connection therewith, each party may disclose certain confidential and proprietary information.\n\n'
+                '2. Confidential Information. \"Confidential Information\" means all non-public information disclosed by or on behalf of a party, whether oral, written, or in any other form, that is marked or reasonably understood to be confidential, including financial information, business plans, customer lists, transaction structures, and pricing.\n\n'
+                '3. Use and Non-Disclosure. The receiving party shall: (a) use the Confidential Information solely for the purpose described above; and (b) not disclose such Confidential Information to any third party other than its Representatives who have a need to know and are bound by confidentiality obligations no less protective than those set forth herein.\n\n'
+                '4. Term. This mocked NDA shall remain in effect for a period of two (2) years from the date of last disclosure. Either party may terminate discussions at any time without obligation to proceed with any transaction.\n\n'
+                '5. Non-Binding. This document is a non-binding illustration generated by InsightEngine for demonstration purposes only and shall not create any legal obligations.',
+                style: TextStyle(fontSize: 12, height: 1.4),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+// ============================================================================
+// GENAI WOW-FACTOR FEATURE WIDGETS
+// ============================================================================
+
+// Next Best Actions Card - AI-Powered Action Recommendations
+class NextBestActionsCard extends StatelessWidget {
+  const NextBestActionsCard();
+
+  @override
+  Widget build(BuildContext context) {
+    final genAI = MockGenAIService();
+    final actions = genAI.generateNextBestActions(MockBankingData.enhancedClients);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return Card(
+      elevation: 8,
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: isDark
+              ? [
+                  const Color(0xFF0F1A2E),
+                  const Color(0xFF1A2332),
+                ]
+              : [
+                  Colors.white,
+                  const Color(0xFFF5F7FA),
+                ],
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFF00E5FF), Color(0xFF0F4C81)],
+                      ),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Icon(Icons.auto_awesome, color: Colors.white, size: 20),
+                  ),
+                  const SizedBox(width: 12),
+                  const Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Next Best Actions',
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          'AI-powered recommendations prioritized for maximum impact',
+                          style: TextStyle(fontSize: 11, color: Colors.grey),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              ...actions.take(5).map((action) => Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: isDark ? Colors.white.withOpacity(0.03) : Colors.black.withOpacity(0.02),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: action.priority == 'high' 
+                        ? Colors.redAccent.withOpacity(0.3)
+                        : Colors.grey.withOpacity(0.2),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(14),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            if (action.priority == 'high')
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                decoration: BoxDecoration(
+                                  color: Colors.redAccent.withOpacity(0.2),
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                                child: const Text(
+                                  'HIGH PRIORITY',
+                                  style: TextStyle(
+                                    fontSize: 9,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.redAccent,
+                                  ),
+                                ),
+                              ),
+                            const Spacer(),
+                            if (action.estimatedRevenue > 0)
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                decoration: BoxDecoration(
+                                  color: Colors.green.withOpacity(0.2),
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                                child: Text(
+                                  '\$${action.estimatedRevenue.toStringAsFixed(2)}M',
+                                  style: const TextStyle(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.green,
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          action.title,
+                          style: const TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          action.clientName,
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: isDark ? Colors.white.withOpacity(0.05) : Colors.black.withOpacity(0.03),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Icon(Icons.lightbulb_outline, size: 12, color: Colors.amber[700]),
+                                  const SizedBox(width: 6),
+                                  const Text(
+                                    'AI Reasoning:',
+                                    style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                action.reasoning,
+                                style: const TextStyle(fontSize: 10, height: 1.4),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Row(
+                          children: [
+                            Icon(
+                              action.actionType == 'email' ? Icons.email_outlined :
+                              action.actionType == 'call' ? Icons.phone_outlined :
+                              action.actionType == 'meeting' ? Icons.event_outlined :
+                              Icons.description_outlined,
+                              size: 14,
+                              color: Colors.grey,
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              'Suggested: ${action.suggestedDate.month}/${action.suggestedDate.day}',
+                              style: const TextStyle(fontSize: 10, color: Colors.grey),
+                            ),
+                            const Spacer(),
+                            ElevatedButton(
+                              onPressed: () {},
+                              style: ElevatedButton.styleFrom(
+                                minimumSize: const Size(60, 28),
+                                padding: const EdgeInsets.symmetric(horizontal: 12),
+                              ),
+                              child: const Text('Execute', style: TextStyle(fontSize: 10)),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              )).toList(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// AI Customer Insights Panel - Real-time 360° Analysis
+class AICustomerInsightsPanel extends StatelessWidget {
+  final ClientData client;
+  
+  const AICustomerInsightsPanel({required this.client});
+
+  @override
+  Widget build(BuildContext context) {
+    final genAI = MockGenAIService();
+    final insights = genAI.generateCustomerInsights(client);
+    final lifeEvents = genAI.detectLifeEvents(client);
+    final churnRisk = genAI.predictChurnRisk(client);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return Card(
+      elevation: 8,
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          gradient: LinearGradient(
+            colors: [
+              const Color(0xFF0F4C81).withOpacity(0.1),
+              Colors.transparent,
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFF00E5FF), Color(0xFF0F4C81)],
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: const Icon(Icons.psychology_outlined, color: Colors.white, size: 22),
+                  ),
+                  const SizedBox(width: 12),
+                  const Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'AI Customer Insights',
+                          style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          'Real-time 360° analysis powered by GenAI',
+                          style: TextStyle(fontSize: 10, color: Colors.grey),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 18),
+              
+              // Churn Risk Indicator
+              Container(
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: _getChurnRiskColor(churnRisk['level']).withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: _getChurnRiskColor(churnRisk['level']), width: 2),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.trending_up,
+                      color: _getChurnRiskColor(churnRisk['level']),
+                      size: 20,
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Relationship Health: ${churnRisk['level']} Risk',
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                              color: _getChurnRiskColor(churnRisk['level']),
+                            ),
+                          ),
+                          Text(
+                            'Risk Score: ${(churnRisk['score'] * 100).toStringAsFixed(0)}%',
+                            style: const TextStyle(fontSize: 10, color: Colors.grey),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              
+              const SizedBox(height: 16),
+              const Text(
+                'Key Insights',
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 10),
+              
+              ...insights.map((insight) => Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: isDark ? Colors.white.withOpacity(0.04) : Colors.black.withOpacity(0.02),
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                      color: _getCategoryColor(insight.category).withOpacity(0.3),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: _getCategoryColor(insight.category).withOpacity(0.2),
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              child: Text(
+                                insight.category.toUpperCase(),
+                                style: TextStyle(
+                                  fontSize: 8,
+                                  fontWeight: FontWeight.bold,
+                                  color: _getCategoryColor(insight.category),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            if (insight.revenueImpact != null)
+                              Text(
+                                '+\$${insight.revenueImpact!.toStringAsFixed(2)}M',
+                                style: const TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.green,
+                                ),
+                              ),
+                          ],
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          insight.title,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          insight.description,
+                          style: TextStyle(
+                            fontSize: 10,
+                            height: 1.4,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                        if (insight.action != null) ...[
+                          const SizedBox(height: 8),
+                          OutlinedButton(
+                            onPressed: () {},
+                            style: OutlinedButton.styleFrom(
+                              minimumSize: const Size(0, 28),
+                              padding: const EdgeInsets.symmetric(horizontal: 12),
+                            ),
+                            child: Text(
+                              insight.action!,
+                              style: const TextStyle(fontSize: 9),
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                ),
+              )).toList(),
+              
+              if (lifeEvents.isNotEmpty) ...[
+                const SizedBox(height: 16),
+                const Text(
+                  'Detected Life Events',
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                ),
+                const SizedBox(height: 10),
+                ...lifeEvents.map((event) => Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.purple.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: Colors.purple.withOpacity(0.3)),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            const Icon(Icons.event_note, size: 16, color: Colors.purple),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                event.eventType,
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.purple,
+                                ),
+                              ),
+                            ),
+                            Text(
+                              '${(event.confidence * 100).toStringAsFixed(0)}% confidence',
+                              style: const TextStyle(fontSize: 9, color: Colors.grey),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          event.description,
+                          style: const TextStyle(fontSize: 10),
+                        ),
+                        const SizedBox(height: 6),
+                        Wrap(
+                          spacing: 4,
+                          runSpacing: 4,
+                          children: event.suggestedProducts.map((product) => Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: Colors.green.withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: Text(
+                              product,
+                              style: const TextStyle(fontSize: 8, color: Colors.green),
+                            ),
+                          )).toList(),
+                        ),
+                      ],
+                    ),
+                  ),
+                )).toList(),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Color _getChurnRiskColor(String level) {
+    switch (level) {
+      case 'High':
+        return Colors.red;
+      case 'Medium':
+        return Colors.orange;
+      default:
+        return Colors.green;
+    }
+  }
+
+  Color _getCategoryColor(String category) {
+    switch (category) {
+      case 'Portfolio Health':
+        return Colors.blue;
+      case 'Compliance':
+        return Colors.orange;
+      case 'Cross-Sell':
+        return Colors.green;
+      case 'Life Event':
+        return Colors.purple;
+      case 'Engagement':
+        return Colors.cyan;
+      default:
+        return Colors.grey;
+    }
+  }
+}
+
+// Market Alerts Card - Real-time Market Intelligence
+class MarketAlertsCard extends StatelessWidget {
+  const MarketAlertsCard();
+
+  @override
+  Widget build(BuildContext context) {
+    final genAI = MockGenAIService();
+    final alerts = genAI.generateMarketAlerts(MockBankingData.enhancedClients);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return Card(
+      elevation: 6,
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.amber.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Icon(Icons.notifications_active, color: Colors.amber, size: 20),
+                ),
+                const SizedBox(width: 12),
+                const Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Market Intelligence Alerts',
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        'Personalized for your portfolio',
+                        style: TextStyle(fontSize: 10, color: Colors.grey),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            ...alerts.map((alert) => Padding(
+              padding: const EdgeInsets.only(bottom: 14),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: isDark ? Colors.white.withOpacity(0.04) : Colors.black.withOpacity(0.02),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: Colors.amber.withOpacity(0.3)),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              alert.title,
+                              style: const TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          Text(
+                            '${alert.timestamp.hour}:${alert.timestamp.minute.toString().padLeft(2, '0')}',
+                            style: const TextStyle(fontSize: 9, color: Colors.grey),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        alert.summary,
+                        style: const TextStyle(fontSize: 11, height: 1.4),
+                      ),
+                      const SizedBox(height: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Colors.orange.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(Icons.people, size: 10, color: Colors.orange),
+                            const SizedBox(width: 4),
+                            Text(
+                              '${alert.affectedClientIds.length} clients affected',
+                              style: const TextStyle(fontSize: 9, color: Colors.orange),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      const Text(
+                        'Talking Points:',
+                        style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600),
+                      ),
+                      const SizedBox(height: 6),
+                      ...alert.talkingPoints.map((point) => Padding(
+                        padding: const EdgeInsets.only(bottom: 4),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text('• ', style: TextStyle(fontSize: 10)),
+                            Expanded(
+                              child: Text(
+                                point,
+                                style: TextStyle(fontSize: 10, color: Colors.grey[600]),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )).toList(),
+                    ],
+                  ),
+                ),
+              ),
+            )).toList(),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// Content Generator View - Email & Report Generation
+class ContentGeneratorView extends StatefulWidget {
+  const ContentGeneratorView();
+
+  @override
+  State<ContentGeneratorView> createState() => _ContentGeneratorViewState();
+}
+
+class _ContentGeneratorViewState extends State<ContentGeneratorView> {
+  String _contentType = 'email';
+  String _selectedClient = '';
+  String _emailPurpose = 'portfolio_review';
+  String _emailTone = 'formal';
+  String _reportType = 'Portfolio Review';
+  String? _generatedContent;
+  bool _generating = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedClient = MockBankingData.enhancedClients.first.id;
+  }
+
+  void _generateContent() async {
+    setState(() {
+      _generating = true;
+      _generatedContent = null;
+    });
+
+    await Future.delayed(const Duration(milliseconds: 800));
+
+    final genAI = MockGenAIService();
+    final client = MockBankingData.enhancedClients.firstWhere(
+      (c) => c.id == _selectedClient,
+    );
+
+    String content = '';
+    if (_contentType == 'email') {
+      content = genAI.generateEmail(
+        client: client,
+        purpose: _emailPurpose,
+        tone: _emailTone,
+      );
+    } else {
+      final report = genAI.generateReport(
+        client: client,
+        reportType: _reportType,
+      );
+      content = '# ${report['title']}\n\n';
+      content += 'Generated: ${report['generatedDate']}\n';
+      content += 'Prepared by: ${report['preparedBy']}\n\n';
+      for (var section in report['sections']) {
+        content += '## ${section['title']}\n\n${section['content']}\n\n';
+      }
+    }
+
+    setState(() {
+      _generatedContent = content;
+      _generating = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
+    return Padding(
+      padding: const EdgeInsets.all(24),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Input Panel
+          Expanded(
+            flex: 2,
+            child: Card(
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            gradient: const LinearGradient(
+                              colors: [Color(0xFF00E5FF), Color(0xFF0F4C81)],
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: const Icon(Icons.auto_fix_high, color: Colors.white, size: 22),
+                        ),
+                        const SizedBox(width: 12),
+                        const Text(
+                          'AI Content Generator',
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    
+                    const Text('Content Type', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+                    const SizedBox(height: 8),
+                    SegmentedButton<String>(
+                      segments: const [
+                        ButtonSegment(value: 'email', label: Text('Email'), icon: Icon(Icons.email, size: 16)),
+                        ButtonSegment(value: 'report', label: Text('Report'), icon: Icon(Icons.description, size: 16)),
+                      ],
+                      selected: {_contentType},
+                      onSelectionChanged: (Set<String> newSelection) {
+                        setState(() {
+                          _contentType = newSelection.first;
+                          _generatedContent = null;
+                        });
+                      },
+                    ),
+                    
+                    const SizedBox(height: 16),
+                    const Text('Client', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+                    const SizedBox(height: 8),
+                    DropdownButton<String>(
+                      value: _selectedClient,
+                      isExpanded: true,
+                      items: MockBankingData.enhancedClients.map((client) {
+                        return DropdownMenuItem(
+                          value: client.id,
+                          child: Text(client.name, style: const TextStyle(fontSize: 12)),
+                        );
+                      }).toList(),
+                      onChanged: (value) {
+                        if (value != null) {
+                          setState(() {
+                            _selectedClient = value;
+                            _generatedContent = null;
+                          });
+                        }
+                      },
+                    ),
+                    
+                    if (_contentType == 'email') ...[
+                      const SizedBox(height: 16),
+                      const Text('Purpose', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+                      const SizedBox(height: 8),
+                      DropdownButton<String>(
+                        value: _emailPurpose,
+                        isExpanded: true,
+                        items: const [
+                          DropdownMenuItem(value: 'portfolio_review', child: Text('Portfolio Review', style: TextStyle(fontSize: 12))),
+                          DropdownMenuItem(value: 'product_introduction', child: Text('Product Introduction', style: TextStyle(fontSize: 12))),
+                          DropdownMenuItem(value: 'general', child: Text('General Outreach', style: TextStyle(fontSize: 12))),
+                        ],
+                        onChanged: (value) {
+                          if (value != null) {
+                            setState(() {
+                              _emailPurpose = value;
+                              _generatedContent = null;
+                            });
+                          }
+                        },
+                      ),
+                      
+                      const SizedBox(height: 16),
+                      const Text('Tone', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+                      const SizedBox(height: 8),
+                      SegmentedButton<String>(
+                        segments: const [
+                          ButtonSegment(value: 'formal', label: Text('Formal', style: TextStyle(fontSize: 10))),
+                          ButtonSegment(value: 'friendly', label: Text('Friendly', style: TextStyle(fontSize: 10))),
+                          ButtonSegment(value: 'urgent', label: Text('Urgent', style: TextStyle(fontSize: 10))),
+                        ],
+                        selected: {_emailTone},
+                        onSelectionChanged: (Set<String> newSelection) {
+                          setState(() {
+                            _emailTone = newSelection.first;
+                            _generatedContent = null;
+                          });
+                        },
+                      ),
+                    ] else ...[
+                      const SizedBox(height: 16),
+                      const Text('Report Type', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+                      const SizedBox(height: 8),
+                      DropdownButton<String>(
+                        value: _reportType,
+                        isExpanded: true,
+                        items: const [
+                          DropdownMenuItem(value: 'Portfolio Review', child: Text('Portfolio Review', style: TextStyle(fontSize: 12))),
+                          DropdownMenuItem(value: 'Market Outlook', child: Text('Market Outlook', style: TextStyle(fontSize: 12))),
+                        ],
+                        onChanged: (value) {
+                          if (value != null) {
+                            setState(() {
+                              _reportType = value;
+                              _generatedContent = null;
+                            });
+                          }
+                        },
+                      ),
+                    ],
+                    
+                    const SizedBox(height: 24),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton.icon(
+                        onPressed: _generating ? null : _generateContent,
+                        icon: _generating
+                          ? const SizedBox(
+                              width: 16,
+                              height: 16,
+                              child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                            )
+                          : const Icon(Icons.auto_awesome, size: 18),
+                        label: Text(_generating ? 'Generating...' : 'Generate with AI'),
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          
+          const SizedBox(width: 16),
+          
+          // Output Panel
+          Expanded(
+            flex: 3,
+            child: Card(
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        const Text(
+                          'Generated Content',
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                        ),
+                        const Spacer(),
+                        if (_generatedContent != null) ...[
+                          IconButton(
+                            icon: const Icon(Icons.copy, size: 18),
+                            onPressed: () {},
+                            tooltip: 'Copy to clipboard',
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.download, size: 18),
+                            onPressed: () {},
+                            tooltip: 'Download',
+                          ),
+                        ],
+                      ],
+                    ),
+                    const Divider(),
+                    const SizedBox(height: 12),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: _generatedContent == null
+                          ? Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.auto_fix_high,
+                                    size: 64,
+                                    color: Colors.grey.withOpacity(0.3),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Text(
+                                    'Configure settings and click "Generate with AI"',
+                                    style: TextStyle(color: Colors.grey[600]),
+                                  ),
+                                ],
+                              ),
+                            )
+                          : Container(
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: isDark ? Colors.white.withOpacity(0.04) : Colors.black.withOpacity(0.02),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: SelectableText(
+                                _generatedContent!,
+                                style: const TextStyle(fontSize: 12, height: 1.6),
+                              ),
+                            ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
+
+// ============================================================================
+// ADDITIONAL FEATURES - SEGMENT DASHBOARDS, ANALYTICS, HIERARCHY, COMPLIANCE
+// ============================================================================
+
+// User Role enum for role-based views
+enum UserRole {
+  relationshipManager,
+  coverageHead,
+  productSpecialist,
+  complianceOfficer,
+}
